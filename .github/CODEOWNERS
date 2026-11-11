@@ -1,0 +1,9 @@
+# Reemplaza los nombres por los usuarios reales de GitHub.
+# Cada carpeta queda a cargo de su dueño (se pide su revisión automáticamente).
+/mecatronica/   @USUARIO_ASESOR
+/vision/        @USUARIO_INTEGRANTE_1
+/ipo/           @USUARIO_INTEGRANTE_2
+/software/      @USUARIO_INTEGRANTE_3
+/data/          @USUARIO_INTEGRANTE_3
+/entregables/   @USUARIO_INTEGRANTE_4
+/docs/          @USUARIO_INTEGRANTE_3

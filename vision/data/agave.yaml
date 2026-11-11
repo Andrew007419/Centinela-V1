@@ -1,0 +1,7 @@
+# Configuración del dataset para YOLOv8. Ajusta las rutas a donde descargues el dataset desde Drive.
+path: vision/data
+train: images/train
+val: images/val
+test: images/test
+names:
+  0: agave

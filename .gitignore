@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+.env
+
+# Entrenamiento y datos pesados (van a Drive)
+runs/
+vision/data/raw/
+vision/data/images/
+vision/data/labels/
+data/raw/
+*.zip
+*.rar
+
+# CAD, animación y video (van a Drive)
+*.blend
+*.blend1
+*.f3d
+*.step
+*.stp
+*.glb
+*.mp4
+*.mov
+*.avi
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
