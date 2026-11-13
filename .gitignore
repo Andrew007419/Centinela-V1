@@ -43,3 +43,6 @@ vision/samples/
 vision/datasets/
 vision/notebooks/*.ipynb
 vision/entrega_ia_colab.zip
+
+# Incluir el modelo entrenado en la entrega
+!vision/models/best.pt
