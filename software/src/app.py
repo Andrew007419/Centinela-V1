@@ -53,6 +53,46 @@ def cargar_modulo_vision():
     return mod, ""
 
 
+@st.cache_data(show_spinner="Procesando con el modelo de visión (en CPU puede tardar)…", max_entries=3)
+def inferir(contenido: bytes, sufijo: str, es_video: bool, conf: float) -> dict:
+    """Corre detectar()/procesar_video() sobre el archivo subido y devuelve el resultado del contrato
+    más los bytes del medio anotado (`imagen_bytes` o `video_bytes`). Se cachea por contenido, para
+    que cambiar de pestaña o de escenario no reprocese el archivo."""
+    vision, _ = cargar_modulo_vision()
+    with tempfile.TemporaryDirectory() as d:
+        entrada = Path(d) / f"entrada{sufijo}"
+        entrada.write_bytes(contenido)
+        if es_video:
+            res = vision.procesar_video(str(entrada), str(Path(d) / "anotado.mp4"))
+            res["video_bytes"] = Path(res["video_anotado"]).read_bytes()
+        else:
+            res = vision.detectar(str(entrada), conf=conf)
+            res["imagen_bytes"] = Path(res["imagen_anotada"]).read_bytes()
+    return res
+
+
+def mostrar_resultado_imagen(res: dict) -> None:
+    c1, c2 = st.columns([1, 2])
+    c1.metric("Plantas detectadas", res["conteo"])
+    c1.caption(f"Inferencia: {res.get('tiempo_ms', '—')} ms (solo `predict`, en CPU)")
+    if res["detecciones"]:
+        c1.dataframe(pd.DataFrame(res["detecciones"])[["id", "confianza"]], hide_index=True, width="stretch")
+    c2.image(res["imagen_bytes"], caption="Detecciones (el número es el id de la foto)")
+
+
+def mostrar_resultado_video(res: dict) -> None:
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Máximo de agaves visibles a la vez", res["maximo_simultaneo"])
+    c2.metric("IDs de seguimiento observados", res["ids_observados"])
+    c3.metric("Velocidad de proceso", f"{res['fps_proceso']:.1f} cuadros/s")
+    st.warning(res.get("advertencia", "Los IDs de seguimiento no equivalen a plantas únicas."))
+    cuadros = pd.DataFrame(res["conteo_por_cuadro"])
+    st.line_chart(cuadros.set_index("cuadro")["conteo"], y_label="Agaves visibles", x_label="Cuadro")
+    st.video(res["video_bytes"])
+    st.download_button("Descargar video anotado", res["video_bytes"], file_name="anotado.mp4", mime="video/mp4")
+    st.caption("El video se codifica en mp4v; si el navegador no lo reproduce, descárgalo.")
+
+
 def aviso_ejemplo_ipo(resp) -> None:
     if resp.es_ejemplo:
         st.warning(
@@ -118,35 +158,28 @@ with tab_conteo:
         st.warning(f"⚠️ **RESULTADO DE EJEMPLO** — el módulo de visión no está disponible ({motivo}).")
 
     if archivo is not None:
-        es_video = Path(archivo.name).suffix.lower() in {".mp4", ".mov", ".avi"}
-        if vision is None:
+        sufijo = Path(archivo.name).suffix.lower()
+        es_video = sufijo in {".mp4", ".mov", ".avi"}
+        if vision is None:  # respaldo: solo si falló la importación
             if es_video:
                 st.video(archivo)
             else:
                 st.image(archivo, caption="Imagen subida (sin detección)")
             st.metric("Plantas detectadas (EJEMPLO, no es una detección real)", 12)
+        elif es_video and not hasattr(vision, "procesar_video"):
+            st.error("El módulo de visión no define `procesar_video()`.")
         else:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=Path(archivo.name).suffix) as tmp:
-                tmp.write(archivo.getbuffer())
-            conf = st.slider("Confianza mínima", 0.05, 0.95, 0.25, 0.05)
+            # `procesar_video` usa conf fija (0.25); el umbral solo aplica a imágenes.
+            conf = 0.25 if es_video else st.slider("Confianza mínima", 0.05, 0.95, 0.25, 0.05)
             try:
-                if es_video:
-                    if not hasattr(vision, "procesar_video"):
-                        st.error("El módulo de visión no define `procesar_video()` todavía.")
-                    else:
-                        salida = str(Path(tmp.name).with_suffix(".anotado.mp4"))
-                        res = vision.procesar_video(tmp.name, salida)
-                        st.json(res)
-                        if Path(res.get("video_anotado", salida)).exists():
-                            st.video(res.get("video_anotado", salida))
-                else:
-                    res = vision.detectar(tmp.name, conf=conf)
-                    c1, c2 = st.columns([1, 2])
-                    c1.metric("Plantas detectadas", res["conteo"])
-                    c1.caption(f"Tiempo: {res.get('tiempo_ms', '—')} ms")
-                    c2.image(res.get("imagen_anotada", tmp.name), caption="Detecciones")
-            except Exception as e:
+                res = inferir(archivo.getvalue(), sufijo, es_video, conf)
+            except Exception as e:  # imagen ilegible, pesos ausentes, video sin FPS...
                 st.error(f"Falló la inferencia: {type(e).__name__}: {e}")
+            else:
+                if es_video:
+                    mostrar_resultado_video(res)
+                else:
+                    mostrar_resultado_imagen(res)
     else:
         st.caption("Sube un archivo para ver el conteo.")
 
