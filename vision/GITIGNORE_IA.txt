@@ -1,0 +1,12 @@
+# Agregar estas líneas al .gitignore existente, sin reemplazarlo.
+.venv/
+__pycache__/
+*.pyc
+.env
+vision/models/*.pt
+vision/runs/
+vision/outputs/
+vision/samples/
+vision/datasets/
+vision/notebooks/*.ipynb
+vision/entrega_ia_colab.zip
