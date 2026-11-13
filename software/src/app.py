@@ -33,18 +33,24 @@ def ipo_cacheado(escenario: str):
     return obtener_ipo(escenario, 2026, 2034)
 
 
+@st.cache_resource(show_spinner="Cargando módulo de visión…")
 def cargar_modulo_vision():
-    """Importa vision/src/inferencia.py si existe y trae detectar(); si no, devuelve None."""
+    """Importa vision/src/inferencia.py una sola vez por proceso (conserva el modelo YOLO en memoria).
+
+    Devuelve (modulo, motivo). Si la importación falla, modulo es None y motivo explica por qué;
+    solo en ese caso el panel usa el resultado de ejemplo.
+    """
     if not RUTA_INFERENCIA.exists():
-        return None
+        return None, "`vision/src/inferencia.py` no existe."
     try:
         spec = importlib.util.spec_from_file_location("inferencia", RUTA_INFERENCIA)
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
-    except Exception as e:  # dependencias faltantes, pesos ausentes, etc.
-        st.session_state["error_vision"] = f"{type(e).__name__}: {e}"
-        return None
-    return mod if hasattr(mod, "detectar") else None
+    except Exception as e:  # dependencias faltantes (cv2, ultralytics), etc.
+        return None, f"no se pudo importar ({type(e).__name__}: {e}). Instala `vision/requirements.txt`."
+    if not hasattr(mod, "detectar"):
+        return None, "`inferencia.py` no define `detectar()`."
+    return mod, ""
 
 
 def aviso_ejemplo_ipo(resp) -> None:
@@ -107,9 +113,8 @@ tab_conteo, tab_calendario, tab_ipo = st.tabs(["1 · Conteo de plantas", "2 · C
 with tab_conteo:
     st.subheader("Conteo de plantas")
     archivo = st.file_uploader("Sube una imagen o un video", type=["jpg", "jpeg", "png", "mp4", "mov", "avi"])
-    vision = cargar_modulo_vision()
+    vision, motivo = cargar_modulo_vision()
     if vision is None:
-        motivo = st.session_state.get("error_vision") or "`vision/src/inferencia.py` todavía no existe o no define `detectar()`."
         st.warning(f"⚠️ **RESULTADO DE EJEMPLO** — el módulo de visión no está disponible ({motivo}).")
 
     if archivo is not None:
