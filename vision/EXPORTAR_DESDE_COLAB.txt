@@ -1,0 +1,39 @@
+# Copiar este contenido a una celda Python de Colab (NO ejecutar en PowerShell).
+from google.colab import drive, files
+from pathlib import Path
+from importlib.metadata import version
+import hashlib, json, shutil, subprocess, sys, tempfile
+
+drive.mount('/content/drive')
+run = Path('/content/drive/MyDrive/CENTINELA_AGAVE/vision/runs/agave_v1-2')
+pesos = run/'weights/best.pt'
+assert pesos.is_file(), pesos
+base = Path(tempfile.mkdtemp(prefix='entrega_ia_'))
+out = base/'vision'
+(out/'models').mkdir(parents=True)
+(out/'evidencias').mkdir()
+shutil.copy2(pesos, out/'models/best.pt')
+for nombre in ['args.yaml', 'results.csv', 'results.png']:
+    if (run/nombre).is_file():
+        shutil.copy2(run/nombre, out/'evidencias'/nombre)
+if (run/'evaluacion').is_dir():
+    shutil.copytree(run/'evaluacion', out/'evidencias/evaluacion')
+# Si guardaste test fuera de run/evaluacion, copia su carpeta real a evidencias antes de empaquetar.
+freeze = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze'], text=True)
+(out/'models/requirements-lock.txt').write_text(freeze)
+manifest = {
+    'run': str(run), 'modelo_base': 'yolov8n.pt', 'clases': ['agave'],
+    'sha256': hashlib.sha256(pesos.read_bytes()).hexdigest(),
+    'tamano_bytes': pesos.stat().st_size,
+    'python_al_empaquetar': sys.version,
+    'ultralytics_al_empaquetar': version('ultralytics'),
+    'entorno': 'freeze de esta sesión al empaquetar; verificar si coincide con la sesión de entrenamiento',
+    'test_reportado_por_responsable': {'precision': .9674, 'recall': .9700, 'mAP50': .9889, 'mAP50_95': .5715},
+    'nota': 'conservar métricas originales y args.yaml como evidencia; no son resultados medidos por este exportador'
+}
+(out/'models/manifiesto.json').write_text(json.dumps(manifest, indent=2))
+zip_path = shutil.make_archive(str(base/'entrega_ia_colab'), 'zip', root_dir=base, base_dir='vision')
+backup = Path('/content/drive/MyDrive/CENTINELA_AGAVE/vision/entrega_ia_colab.zip')
+shutil.copy2(zip_path, backup)
+files.download(zip_path)
+print('Exportación guardada en Drive:', backup)
