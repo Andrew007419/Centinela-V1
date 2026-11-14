@@ -148,6 +148,7 @@ opciones_mun = sorted(
 municipios = st.sidebar.multiselect(
     "Municipio (solo DENUE y Censo)",
     opciones_mun,
+    format_func=datos.nombre_bonito,
     placeholder="Todos" if opciones_mun else "Sin datos de municipios todavía",
     disabled=not opciones_mun,
 )
@@ -251,7 +252,7 @@ with tab_ipo:
                 st.info("Sin establecimientos para ese filtro.")
             else:
                 cuenta = d.groupby("municipio").size().sort_values().rename("establecimientos").reset_index()
-                st.plotly_chart(go.Figure(go.Bar(x=cuenta["establecimientos"], y=cuenta["municipio"], orientation="h")).update_layout(
+                st.plotly_chart(go.Figure(go.Bar(x=cuenta["establecimientos"], y=cuenta["municipio"].map(datos.nombre_bonito), orientation="h")).update_layout(
                     height=max(250, 22 * len(cuenta)), margin=dict(t=10), xaxis_title="Establecimientos"), width="stretch")
                 coords = d.dropna(subset=["lat", "lon"])
                 if not coords.empty:
