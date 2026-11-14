@@ -95,11 +95,11 @@ def mostrar_resultado_video(res: dict) -> None:
 
 def aviso_ejemplo_ipo(resp) -> None:
     if resp.es_ejemplo:
-        st.warning(
-            "⚠️ **DATOS DE EJEMPLO** — la API del IPO no respondió, así que estos números "
-            "salen de `software/src/ejemplo_ipo.json` y **no son resultados reales**. "
-            f"Detalle: {resp.motivo}",
-        )
+        st.warning("⚠️ **DATOS DE EJEMPLO**: la API del IPO no responde; "
+                   "los números de las pestañas 2 y 3 no son reales.")
+        with st.expander("Detalle técnico", expanded=False):
+            st.write("Se usa `software/src/ejemplo_ipo.json`, con cifras inventadas solo para probar el panel.")
+            st.code(resp.motivo or "Sin detalle", language=None)
 
 
 def recuadro_supuestos(resp) -> None:
@@ -247,20 +247,59 @@ with tab_ipo:
 
     # Censo
     with col_b:
-        st.markdown("#### Censo Económico 2024 · rama 3121")
-        c = filtrar_municipio(df_faltante("censo"), municipios)
+        st.markdown("#### Censo Económico 2024")
+        nivel = st.radio("Nivel", ["Rama 3121 · industria de las bebidas", "Clase 312144 · elaboración de tequila"],
+                         horizontal=True, label_visibility="collapsed")
+        c = filtrar_municipio(df_faltante("censo" if nivel.startswith("Rama") else "censo_tequila"), municipios)
         if c is not None:
+            st.info(datos.AVISO_CONFIDENCIAL)
             if c.empty:
-                st.info("Sin datos del Censo para ese filtro.")
+                st.info("Sin datos del Censo para ese filtro (no todos los municipios tienen esa actividad).")
             else:
-                st.dataframe(c, hide_index=True, width="stretch")
-                st.caption("Levantamiento de 2023.")
+                r = datos.resumen_censo(c)
+
+                def total(col: str, etiqueta: str, decimales: int) -> None:
+                    suma, n = r[col]["suma"], r[col]["n_con_dato"]
+                    valor = "sin dato" if suma is None else f"{suma:,.{decimales}f}"
+                    metricas[col].metric(etiqueta, valor, help=f"Suma de los {n} de {r['municipios']} municipios con dato; "
+                                                              "los vacíos (confidenciales) no se suman.")
+
+                metricas = dict(zip(["ue", "personal_ocupado", "produccion_bruta"], st.columns(3)))
+                metricas["ue"].metric("Unidades económicas", f"{r['unidades_economicas']:,}",
+                                      help=f"Suma de {r['municipios']} municipios; esta variable siempre viene completa.")
+                total("personal_ocupado", "Personal ocupado", 0)
+                total("produccion_bruta", "Producción bruta (millones de pesos)", 1)
+                st.caption("Las sumas usan solo valores no vacíos y solo de los municipios mostrados: "
+                           "**no son el total estatal** (los municipios no se pueden sumar para obtenerlo).")
+                st.dataframe(
+                    c.assign(confidencial=c["confidencial"].astype(bool))[
+                        ["municipio", "clave_mun", "unidades_economicas", "personal_ocupado",
+                         "produccion_bruta", "valor_agregado", "confidencial"]],
+                    hide_index=True, width="stretch",
+                    column_config={"confidencial": st.column_config.CheckboxColumn("confidencial", help=datos.AVISO_CONFIDENCIAL)},
+                )
+                st.caption("El Censo 2024 describe el año 2023. Montos en millones de pesos a precios corrientes de 2023. "
+                           "El personal ocupado del Censo no equivale a puestos de trabajo afiliados al IMSS.")
 
     # Exportaciones (no se filtran por municipio)
-    st.markdown("#### Exportaciones de tequila (partida 2208.90)")
+    st.markdown("#### Exportaciones de tequila")
     x = df_faltante("comercio")
     if x is not None and not x.empty:
         serie_x = x.groupby("periodo", as_index=False)["valor_usd"].sum()
         st.plotly_chart(go.Figure(go.Scatter(x=serie_x["periodo"], y=serie_x["valor_usd"], mode="lines+markers")).update_layout(
             height=320, yaxis_title="Valor (USD)", xaxis_title="Periodo", margin=dict(t=10)), width="stretch")
-        st.caption("Datos estatales; el filtro de municipio no aplica.")
+        st.caption("Datos nacionales, solo tequila, valor en USD (Banxico). El filtro de municipio no aplica. "
+                   "El último año es parcial.")
+
+    # Serie de apoyo (opcional): UN Comtrade del Integrante 2. Si el archivo no existe, no se muestra nada.
+    comtrade = datos.cargar("comtrade")
+    if comtrade is not None and not comtrade.empty:
+        anual = datos.exportaciones_comtrade_anual(comtrade)
+        if anual is None:
+            st.warning("`comercio_2208_90.csv` no trae las columnas esperadas (`valor_usd` y `anio` o `periodo`).")
+        elif not anual.empty:
+            st.markdown("##### HS 220890 (todos los destilados), UN Comtrade")
+            st.plotly_chart(go.Figure(go.Bar(x=anual["anio"].astype(str), y=anual["valor_usd"])).update_layout(
+                height=300, yaxis_title="Valor (USD)", xaxis_title="Año", margin=dict(t=10)), width="stretch")
+            st.caption("Serie de apoyo: incluye todos los destilados de la partida 220890, no solo tequila. "
+                       "Total Mundo por año (UN Comtrade).")

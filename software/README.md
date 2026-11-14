@@ -8,7 +8,7 @@
 | # | Entregable | Ruta |
 |---|---|---|
 | 1 | Panel web (Streamlit) con 3 secciones | `software/src/app.py` |
-| 2 | ETL de DENUE 312144 (tequila), comercio 220890 (2208.90) y Censo 3121 | `software/etl/` |
+| 2 | ETL de DENUE 312144 (tequila), comercio (Banxico y Comtrade) y Censo 3121 | `software/etl/` |
 | 3 | Datos procesados con los formatos del contrato | `data/processed/` |
 | 4 | Carpeta de Drive abierta con datos y enlaces | `docs/ENLACES.md` |
 | 5 | Código reproducible desde cero | este README + `requirements.txt` |
@@ -34,8 +34,10 @@ Elementos que debe tener:
 | Dataset | Filtro | Archivo de salida |
 |---|---|---|
 | DENUE (INEGI) | Clase SCIAN **312144** (Elaboración de tequila), estado de Jalisco | `data/processed/denue_312142_jalisco.csv` (nombre legado del contrato) |
+| Comercio exterior (Banxico, Cubo de Comercio Exterior) | Solo tequila (fracción 22089003 y subfracciones), serie mensual nacional, solo valor en USD | `data/processed/comercio_tequila_banxico.csv` |
 | Comercio exterior (DataMéxico; respaldo UN Comtrade) | HS **220890** (2208.90), México | `data/processed/comercio_2208_90.csv` |
-| Censo Económico 2024 (INEGI) | Rama **3121**, por municipio | `data/processed/censo_3121_municipal.csv` |
+| Censo Económico 2024 (INEGI, SAIC) | Rama **3121**, por municipio. Las celdas vacías son confidenciales (no son cero) | `data/processed/censo_3121_municipal.csv` |
+| Censo Económico 2024 (INEGI, SAIC) | Clase **312144** (tequila), por municipio. Las celdas vacías son confidenciales (no son cero) | `data/processed/censo_312144_tequila_municipal.csv` |
 
 Enlaces oficiales en `docs/ENLACES.md`. Para cada dataset anota en `data/README.md`: fecha de descarga, filtros aplicados y columnas usadas.
 
