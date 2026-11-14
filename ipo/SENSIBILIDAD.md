@@ -52,20 +52,6 @@ Factor base y ventana base. Se aísla el efecto de la demanda.
 
 **Lectura:** si la demanda crece, el IPO baja; si cae, sube. Pero en los tres escenarios el IPO es mayor que 1 desde 2029 y mayor que 3.7 en 2034. La conclusión no depende de apostar por un crecimiento específico.
 
-## Qué responder si preguntan
-
-**“¿Y si el factor es 20 kg y no 32?”**  
-En 2026 el IPO baja a 0.635 y la banda cruza 1: hay incertidumbre. Desde 2031 el IPO es 3.048, así que la presión sigue siendo clara.
-
-**“¿Y si la demanda no crece?”**  
-El IPO de 2034 es 4.877. La presión no depende del optimismo; el escenario base ya la muestra.
-
-**“¿Y si la demanda cae 3%?”**  
-El IPO sube a 6.415 en 2034. El problema se agrava, no desaparece.
-
-**“¿Y si la ventana se concentra en el año 7?”**  
-Adelanta la presión en 2029-2030, pero en 2031 los tres pesos convergen en 4.877.
-
 ## Límites de esta sensibilidad
 
 - No es una medición: el factor y la ventana son supuestos calibrados con literatura.
