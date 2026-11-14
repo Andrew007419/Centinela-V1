@@ -269,7 +269,6 @@ with tab_calendario:
 # ---------- 3. IPO y contexto ----------
 with tab_ipo:
     st.subheader("IPO y contexto")
-    st.info(AVISO_IPO_REGIONAL)
 
     # IPO por escenario
     resps = {e: ipo_cacheado(e) for e in ESCENARIOS}
