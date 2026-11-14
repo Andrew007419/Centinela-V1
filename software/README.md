@@ -35,7 +35,7 @@ Elementos que debe tener:
 |---|---|---|
 | DENUE (INEGI) | Clase SCIAN **312144** (Elaboración de tequila), estado de Jalisco | `data/processed/denue_312142_jalisco.csv` |
 | Comercio exterior (Banxico, Cubo de Comercio Exterior) | Solo tequila (fracción 22089003 y subfracciones), serie mensual nacional, solo valor en USD | `data/processed/comercio_tequila_banxico.csv` |
-| Censo Económico 2024 (INEGI) | Rama **3121**, por municipio | `data/processed/censo_3121_municipal.csv` |
+| Censo Económico 2024 (INEGI, SAIC) | Rama **3121** y clase **312144** (tequila), por municipio. Las celdas vacías son confidenciales (no son cero) | `data/processed/censo_3121_municipal.csv` y `data/processed/censo_312144_tequila_municipal.csv` |
 
 Enlaces oficiales en `docs/ENLACES.md`. Para cada dataset anota en `data/README.md`: fecha de descarga, filtros aplicados y columnas usadas.
 
