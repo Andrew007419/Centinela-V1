@@ -12,13 +12,31 @@ ARCHIVOS = {
     "denue": "denue_312142_jalisco.csv",
     "comercio": "comercio_tequila_banxico.csv",  # serie principal: Banxico, mensual, nacional, solo tequila
     "comtrade": "comercio_2208_90.csv",  # opcional, del Integrante 2: UN Comtrade, HS 220890 (todos los destilados)
-    "censo": "censo_3121_municipal.csv",
+    "censo": "censo_3121_municipal.csv",  # rama 3121, industria de las bebidas
+    "censo_tequila": "censo_312144_tequila_municipal.csv",  # clase 312144, elaboración de tequila
 }
 COMANDOS_ETL = {
     "denue": "python software/etl/denue_312142.py",
     "comercio": "python software/etl/comercio_2208_90.py",
     "censo": "python software/etl/censo_3121.py",
+    "censo_tequila": "python software/etl/censo_3121.py",
 }
+
+AVISO_CONFIDENCIAL = "Las celdas vacías son datos confidenciales de INEGI; no son cero y no se suman a totales."
+VARIABLES_CENSO = ["personal_ocupado", "produccion_bruta", "valor_agregado"]
+
+
+def resumen_censo(df: pd.DataFrame) -> dict:
+    """Totales del Censo sobre los municipios dados, sumando solo valores no vacíos.
+
+    Los vacíos son datos confidenciales (no son cero). `n_con_dato` indica en cuántos municipios
+    se apoya cada suma; por eso la suma de municipios NO es el total estatal.
+    """
+    resumen = {"municipios": len(df), "unidades_economicas": int(df["unidades_economicas"].sum())}
+    for col in VARIABLES_CENSO:
+        validos = df[col].dropna()
+        resumen[col] = {"suma": float(validos.sum()) if len(validos) else None, "n_con_dato": int(len(validos))}
+    return resumen
 
 
 def cargar(nombre: str) -> pd.DataFrame | None:
