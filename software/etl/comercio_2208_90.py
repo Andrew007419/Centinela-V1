@@ -1,8 +1,11 @@
-"""ETL de comercio exterior: exportaciones de tequila (partida 2208.90), serie mensual nacional.
+"""ETL de comercio exterior (Banxico): exportaciones de tequila, serie mensual nacional en USD.
+
+Solo tequila (fracción 22089003 y sus subfracciones posteriores a 2021), no toda la partida 2208.90.
 
 Entrada : data/raw/comercio*.csv   (Banxico, Cubo de Comercio Exterior, "Matriz Productos",
           formato largo con columnas Meses, TIGIE, Valor en dólares; UTF-8 con BOM)
-Salida  : data/processed/comercio_2208_90.csv
+Salida  : data/processed/comercio_tequila_banxico.csv
+          (no usar el nombre comercio_2208_90.csv: ese archivo es el de UN Comtrade del Integrante 2)
 Columnas: periodo (AAAA-MM), valor_usd, volumen (vacío), unidad (vacío), destino
 
 Uso: python software/etl/comercio_2208_90.py
@@ -28,6 +31,7 @@ MESES = {m: i for i, m in enumerate(
     ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto",
      "septiembre", "octubre", "noviembre", "diciembre"], 1)}
 DESTINO = "todas las regiones"
+SALIDA = "comercio_tequila_banxico.csv"
 
 
 def codigos_del_periodo(periodo: str) -> tuple[str, ...] | None:
@@ -84,7 +88,7 @@ def main() -> None:
     salida = pd.DataFrame(filas).sort_values("periodo")
     salida = salida.assign(volumen=None, unidad=None, destino=DESTINO)[["periodo", "valor_usd", "volumen", "unidad", "destino"]]
     print(f"Periodos: {salida.periodo.iloc[0]} a {salida.periodo.iloc[-1]}")
-    c.escribir(salida, "comercio_2208_90.csv")
+    c.escribir(salida, SALIDA)
 
 
 if __name__ == "__main__":
