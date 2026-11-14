@@ -24,7 +24,7 @@ AVISO_IPO_REGIONAL = (
     "Los filtros de municipio solo afectan a DENUE y al Censo, **no al IPO**."
 )
 
-st.set_page_config(page_title="Centinela", page_icon="🌵", layout="wide")
+st.set_page_config(page_title="Centinela·Agave", page_icon="🌵", layout="wide")
 
 
 # ---------- Utilidades ----------
@@ -136,7 +136,7 @@ def filtrar_municipio(df: pd.DataFrame | None, municipios: list[str]) -> pd.Data
 
 
 # ---------- Barra lateral ----------
-st.sidebar.title("🌵 Centinela")
+st.sidebar.title("🌵 Centinela·Agave")
 escenario = st.sidebar.selectbox("Escenario", ESCENARIOS, index=1)
 
 denue_df = datos.cargar("denue")
@@ -153,7 +153,10 @@ municipios = st.sidebar.multiselect(
 )
 st.sidebar.info(AVISO_IPO_REGIONAL)
 
-st.title("Centinela · presión de oferta del agave en Jalisco")
+st.title("🌵 Centinela·Agave")
+st.markdown("**Cuánto agave madurará cada año frente a lo que la industria del tequila puede absorber.** "
+            "Cuenta plantas con visión por computadora, calcula el Índice de Presión de Oferta (IPO) y lo pone junto a "
+            "los datos oficiales de Jalisco (DENUE, exportaciones y Censo Económico).")
 tab_conteo, tab_calendario, tab_ipo = st.tabs(["1 · Conteo de plantas", "2 · Calendario de madurez", "3 · IPO y contexto"])
 
 # ---------- 1. Conteo de plantas ----------
