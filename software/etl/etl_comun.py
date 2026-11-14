@@ -1,6 +1,7 @@
 """Utilidades comunes del ETL: normalización de texto, clave de municipio y lectura de originales."""
 from __future__ import annotations
 
+import io
 import re
 import sys
 import unicodedata
@@ -92,6 +93,27 @@ def leer_csv(ruta: Path) -> pd.DataFrame:
         except UnicodeDecodeError as e:
             ultimo = e
     raise ultimo  # pragma: no cover
+
+
+def leer_csv_desde_encabezado(ruta: Path, inicio_encabezado: str) -> pd.DataFrame:
+    """Lee un CSV con líneas de metadatos antes del encabezado y basura al final.
+
+    Quita bytes NUL, busca la primera línea que empiece con `inicio_encabezado` (sin acentos ni
+    mayúsculas) y lee desde ahí todo como texto. Las filas vacías y las notas quedan para que el
+    llamador las descarte con sus propios filtros.
+    """
+    crudo = ruta.read_bytes().replace(b"\x00", b"")
+    try:
+        texto = crudo.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        texto = crudo.decode("latin-1")
+    lineas = texto.splitlines()
+    buscado = normalizar_texto(inicio_encabezado)
+    for i, linea in enumerate(lineas):
+        if normalizar_texto(linea.lstrip('"')).startswith(buscado):
+            texto_csv = "\n".join(lineas[i:])
+            return pd.read_csv(io.StringIO(texto_csv), dtype=str, skip_blank_lines=True)
+    raise ColumnaFaltante(f"No encontré la línea de encabezado que empieza con '{inicio_encabezado}' en {ruta.name}.")
 
 
 def _clave_col(nombre: str) -> str:

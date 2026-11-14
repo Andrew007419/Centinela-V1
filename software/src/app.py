@@ -247,14 +247,39 @@ with tab_ipo:
 
     # Censo
     with col_b:
-        st.markdown("#### Censo Económico 2024 · rama 3121")
-        c = filtrar_municipio(df_faltante("censo"), municipios)
+        st.markdown("#### Censo Económico 2024")
+        nivel = st.radio("Nivel", ["Rama 3121 · industria de las bebidas", "Clase 312144 · elaboración de tequila"],
+                         horizontal=True, label_visibility="collapsed")
+        c = filtrar_municipio(df_faltante("censo" if nivel.startswith("Rama") else "censo_tequila"), municipios)
         if c is not None:
+            st.info(datos.AVISO_CONFIDENCIAL)
             if c.empty:
-                st.info("Sin datos del Censo para ese filtro.")
+                st.info("Sin datos del Censo para ese filtro (no todos los municipios tienen esa actividad).")
             else:
-                st.dataframe(c, hide_index=True, width="stretch")
-                st.caption("Levantamiento de 2023.")
+                r = datos.resumen_censo(c)
+
+                def total(col: str, etiqueta: str, decimales: int) -> None:
+                    suma, n = r[col]["suma"], r[col]["n_con_dato"]
+                    valor = "sin dato" if suma is None else f"{suma:,.{decimales}f}"
+                    metricas[col].metric(etiqueta, valor, help=f"Suma de los {n} de {r['municipios']} municipios con dato; "
+                                                              "los vacíos (confidenciales) no se suman.")
+
+                metricas = dict(zip(["ue", "personal_ocupado", "produccion_bruta"], st.columns(3)))
+                metricas["ue"].metric("Unidades económicas", f"{r['unidades_economicas']:,}",
+                                      help=f"Suma de {r['municipios']} municipios; esta variable siempre viene completa.")
+                total("personal_ocupado", "Personal ocupado", 0)
+                total("produccion_bruta", "Producción bruta (millones de pesos)", 1)
+                st.caption("Las sumas usan solo valores no vacíos y solo de los municipios mostrados: "
+                           "**no son el total estatal** (los municipios no se pueden sumar para obtenerlo).")
+                st.dataframe(
+                    c.assign(confidencial=c["confidencial"].astype(bool))[
+                        ["municipio", "clave_mun", "unidades_economicas", "personal_ocupado",
+                         "produccion_bruta", "valor_agregado", "confidencial"]],
+                    hide_index=True, width="stretch",
+                    column_config={"confidencial": st.column_config.CheckboxColumn("confidencial", help=datos.AVISO_CONFIDENCIAL)},
+                )
+                st.caption("El Censo 2024 describe el año 2023. Montos en millones de pesos a precios corrientes de 2023. "
+                           "El personal ocupado del Censo no equivale a puestos de trabajo afiliados al IMSS.")
 
     # Exportaciones (no se filtran por municipio)
     st.markdown("#### Exportaciones de tequila")

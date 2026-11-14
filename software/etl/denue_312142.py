@@ -1,7 +1,7 @@
 """ETL del DENUE: clase SCIAN 312144 (Elaboración de tequila), Jalisco.
 
-Nota: la ficha original citaba 312142, de una versión anterior del SCIAN; en el DENUE actual
-esa clase no existe. El nombre del script y del CSV conservan "312142" por el contrato.
+Nota: la ficha original del reto citaba 312142, código que no existe en el DENUE ni en el SAIC
+(SCIAN 2023); el código vigente es 312144. El nombre del script y del CSV conservan "312142" por el contrato.
 
 Entrada : data/raw/denue*.csv   (descarga del DENUE, ver mensaje de error)
 Salida  : data/processed/denue_312142_jalisco.csv
