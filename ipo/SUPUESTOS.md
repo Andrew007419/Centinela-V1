@@ -66,10 +66,11 @@ No hay un factor oficial publicado. Se define una banda con literatura y se decl
 La demanda no es solo exportación. Se construye así:
 
 1. **Base:** 2.18 millones de toneladas de consumo industrial en 2025 (CNIT).
-2. **Tendencia:** exportaciones de tequila, partida 2208.90, desde `data/processed/comercio_2208_90.csv`.
+2. **Tendencia:** exportaciones de tequila, partida 2208.90, desde `data/processed/comercio_2208_90.csv` (Comtrade). La serie de Banxico 22089003 (2002-2026, USD) se integrará como complemento más específico; aún no está en el cálculo.
 3. **Contexto reciente:** producción de tequila -1.7% y consumo de agave +3% en el primer semestre de 2026 (Swissinfo/EFE, datos CRT).
-4. **Conversión:** llevar exportaciones a toneladas anuales solo si existe un factor documentado; si no, usarlas como **índice de tendencia** y no como toneladas.
-5. **Escenarios:** optimista, base y pesimista, con supuestos explícitos de crecimiento de demanda y de concentración de oferta.
+4. **Volumen 2021:** Comtrade reporta 329.2M kg con valor de US$3,115M (9.46 USD/kg), una caída de volumen mientras el valor sube. No se usa como conversión; se declara la anomalía.
+5. **Conversión:** llevar exportaciones a toneladas anuales solo si existe un factor documentado; si no, usarlas como **índice de tendencia** y no como toneladas.
+6. **Escenarios:** optimista, base y pesimista, con supuestos explícitos de crecimiento de demanda y de concentración de oferta.
 
 **Crecimiento usado:** optimista **+3% anual**, base **0%** y pesimista **-3%**, anclados en 2.18M t de 2025. El +3% se apoya en el consumo de agave del 1.er semestre 2026; el -3% en la caída de producción de tequila (-1.7%). Son supuestos del equipo, no un pronóstico.
 
