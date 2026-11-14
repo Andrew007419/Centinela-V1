@@ -35,7 +35,7 @@ IPO = oferta madura (t) / demanda absorbible (t)
 ## Paso a paso
 
 ### 1. Serie de inventario por año (día 1)
-Con los tres puntos (2017, 2022, 2026) arma una serie anual por interpolación documentada. De ella sale una **siembra neta por año** aproximada. Guarda la serie en `data/processed/inventario_agave.csv`, con columnas `anio`, `plantas`, `fuente`, `definicion`.
+Con los tres puntos (2017, 2022, 2026) arma una serie anual por interpolación documentada. De ella sale una **siembra neta por año** aproximada. Guarda la serie en `data/processed/inventario_agave.csv`, con columnas `anio`, `plantas`, `hectareas`, `siembra_neta_plantas`, `fuente`, `definicion`.
 
 ### 2. Cohortes de maduración (día 2)
 - Cada cohorte es el conjunto de plantas sembradas en un año.

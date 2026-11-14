@@ -1,0 +1,11 @@
+anio,plantas,hectareas,siembra_neta_plantas,fuente,definicion
+2017,29000000,,,The Logistics World vía CRT (según ficha),plantas disponibles (ancla)
+2018,98200000,,69200000,Interpolación lineal entre anclas (equipo),interpolado
+2019,167400000,,69200000,Interpolación lineal entre anclas (equipo),interpolado
+2020,236600000,,69200000,Interpolación lineal entre anclas (equipo),interpolado
+2021,305800000,,69200000,Interpolación lineal entre anclas (equipo),interpolado
+2022,375000000,,69200000,The Logistics World vía CRT (según ficha),plantas disponibles (ancla)
+2023,707250000,,332250000,Interpolación lineal entre anclas (equipo),interpolado
+2024,1039500000,,332250000,Interpolación lineal entre anclas (equipo),interpolado
+2025,1371750000,,332250000,Interpolación lineal entre anclas (equipo),interpolado
+2026,1704000000,511492,332250000,Revista E&N vía CRT (según ficha),inventario total (ancla)
