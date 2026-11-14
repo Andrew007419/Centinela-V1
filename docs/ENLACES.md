@@ -4,7 +4,7 @@ Completa esta tabla conforme avance el proyecto. En Drive, el permiso debe ser *
 
 | Recurso | Responsable | Enlace |
 |---|---|---|
-| Carpeta general en Drive (datos abiertos) | Integrante 3 | |
+| Carpeta general en Drive (datos abiertos) | Integrante 3 | https://drive.google.com/drive/folders/1S-G3pQW4yxLqE7NSIUQljxVglqNfdo5V?usp=sharing |
 | Dataset de imágenes y etiquetas | Integrante 1 | |
 | Pesos del modelo YOLOv8 (`best.pt`) | Integrante 1 | |
 | Archivos CAD y `.blend` | Asesor mecatrónica | |
@@ -14,6 +14,15 @@ Completa esta tabla conforme avance el proyecto. En Drive, el permiso debe ser *
 | Manual de uso | Integrante 4 | |
 | Pitch (8 diapositivas) | Integrante 4 | |
 | Video final (60-90 s) | Integrante 4 | |
+
+## Carpeta de Drive con los datos del proyecto
+
+Enlace público (cualquier persona con el enlace puede ver): https://drive.google.com/drive/folders/1S-G3pQW4yxLqE7NSIUQljxVglqNfdo5V?usp=sharing
+
+- `datos_originales`: archivos tal como los entregan las fuentes (DENUE, Banxico y SAIC del Censo Económico), para reproducir los ETL.
+- `datos_procesados`: CSV generados por los scripts de `software/etl/` (los mismos de `data/processed/`).
+- `dataset_vision`: dataset de imágenes y etiquetas de agave (lo aporta el Integrante 1).
+- `entregables`: reporte, infografía, manual, pitch y video (los aporta el Integrante 4).
 
 ## Fuentes oficiales de datos
 
