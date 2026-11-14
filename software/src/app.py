@@ -141,7 +141,7 @@ def aviso_ejemplo_ipo(resp) -> None:
 
 
 def recuadro_supuestos(resp) -> None:
-    with st.expander("Supuestos y fuentes (leídos de la respuesta del IPO)", expanded=True):
+    with st.expander("Supuestos y fuentes (leídos de la respuesta del IPO)", expanded=False):
         d = resp.datos
         f = d["factor_plantas_a_toneladas"]
         st.markdown(
