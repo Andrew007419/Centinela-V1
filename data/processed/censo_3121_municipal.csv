@@ -1,0 +1,116 @@
+municipio,clave_mun,anio,produccion_bruta,valor_agregado,personal_ocupado,unidades_economicas,confidencial
+acatic,14001,2023,6.24,0.855,15,10,0
+acatlan de juarez,14002,2023,5.911,2.948,29,6,0
+ahualulco de mercado,14003,2023,4.001,2.078,21,8,0
+amacueca,14004,2023,,,,1,1
+amatitan,14005,2023,104.263,28.313,93,7,0
+ameca,14006,2023,22.66,13.551,73,17,0
+san juanito de escobedo,14007,2023,33.275,12.412,100,5,0
+arandas,14008,2023,6493.677,2475.78,2096,30,0
+el arenal,14009,2023,212.387,54.861,305,14,0
+atemajac de brizuela,14010,2023,,,,3,1
+atengo,14011,2023,,,,2,1
+atenguillo,14012,2023,,,,1,1
+atotonilco el alto,14013,2023,13496.541,3588.359,4841,31,0
+atoyac,14014,2023,2.414,1.284,15,6,0
+autlan de navarro,14015,2023,43.761,25.128,107,28,0
+ayotlan,14016,2023,5.209,3.393,17,6,0
+ayutla,14017,2023,,,,2,1
+la barca,14018,2023,15.581,5.155,44,13,0
+cabo corrientes,14020,2023,4.127,1.792,24,11,0
+casimiro castillo,14021,2023,17.253,7.888,69,11,0
+cihuatlan,14022,2023,,,,13,1
+zapotlan el grande,14023,2023,30.637,14.488,167,35,0
+cocula,14024,2023,10.23,3.817,23,7,0
+colotlan,14025,2023,5.1,3.049,30,6,0
+concepcion de buenos aires,14026,2023,,,,5,1
+cuautitlan de garcia barragan,14027,2023,,,,2,1
+cuautla,14028,2023,,,,1,1
+cuquio,14029,2023,,,,1,1
+chapala,14030,2023,9.094,0.686,74,14,0
+chiquilistlan,14032,2023,,,,1,1
+degollado,14033,2023,17.84,10.141,36,5,0
+encarnacion de diaz,14035,2023,32.914,3.765,47,8,0
+etzatlan,14036,2023,8.988,4.115,33,9,0
+el grullo,14037,2023,18.063,6.085,60,16,0
+guachinango,14038,2023,,,,1,1
+guadalajara,14039,2023,15886.753,7345.255,5630,540,0
+hostotipaquillo,14040,2023,,,,2,1
+huejucar,14041,2023,2.31,1.461,12,4,0
+huejuquilla el alto,14042,2023,,,,2,1
+la huerta,14043,2023,7.936,4.2,42,9,0
+ixtlahuacan de los membrillos,14044,2023,2075.843,125.441,749,15,0
+ixtlahuacan del rio,14045,2023,,,,3,1
+jalostotitlan,14046,2023,6.028,2.152,16,4,0
+jamay,14047,2023,27.943,15.317,48,8,0
+jesus maria,14048,2023,1768.882,559.136,450,4,0
+jocotepec,14050,2023,15.425,8.472,76,15,0
+juanacatlan,14051,2023,3.651,1.793,29,13,0
+juchitlan,14052,2023,,,,1,1
+lagos de moreno,14053,2023,281.45,47.931,123,18,0
+el limon,14054,2023,,,,2,1
+magdalena,14055,2023,,,,3,1
+santa maria del oro,14056,2023,,,,1,1
+mascota,14058,2023,5.02,1.757,26,7,0
+mazamitla,14059,2023,,,,3,1
+mexticacan,14060,2023,,,,1,1
+mezquitic,14061,2023,,,,1,1
+mixtlan,14062,2023,,,,1,1
+ocotlan,14063,2023,19.716,8.992,79,26,0
+ojuelos de jalisco,14064,2023,2.683,1.298,18,8,0
+pihuamo,14065,2023,,,,2,1
+poncitlan,14066,2023,18.453,6.111,99,10,0
+puerto vallarta,14067,2023,328.692,59.587,344,67,0
+villa purificacion,14068,2023,1.268,0.486,12,4,0
+quitupan,14069,2023,,,,2,1
+el salto,14070,2023,46.617,22.032,265,134,0
+san diego de alejandria,14072,2023,,,,2,1
+san juan de los lagos,14073,2023,2.196,1.03,17,7,0
+san julian,14074,2023,5.6,3.132,25,7,0
+san marcos,14075,2023,,,,2,1
+san martin hidalgo,14077,2023,13.303,7.088,67,5,0
+san miguel el alto,14078,2023,,,,3,1
+gomez farias,14079,2023,13.451,6.036,38,9,0
+san sebastian del oeste,14080,2023,,,,2,1
+santa maria de los angeles,14081,2023,,,,1,1
+sayula,14082,2023,1939.866,964.778,171,18,0
+tala,14083,2023,15.695,7.944,35,14,0
+talpa de allende,14084,2023,2.233,1.168,14,7,0
+tamazula de gordiano,14085,2023,13.489,8.166,37,11,0
+tapalpa,14086,2023,1.936,0.58,18,5,0
+tecalitlan,14087,2023,5.992,3.198,38,10,0
+tecolotlan,14088,2023,3.448,1.642,19,6,0
+techaluta de montenegro,14089,2023,,,,1,1
+tenamaxtlan,14090,2023,,,,1,1
+teocaltiche,14091,2023,1.656,0.752,13,3,0
+teocuitatlan de corona,14092,2023,,,,2,1
+tepatitlan de morelos,14093,2023,3336.665,938.902,811,30,0
+tequila,14094,2023,14403.356,4167.25,2373,34,0
+teuchitlan,14095,2023,,,,2,1
+tizapan el alto,14096,2023,4.081,2.186,23,7,0
+tlajomulco de zuniga,14097,2023,2494.588,935.515,779,180,0
+san pedro tlaquepaque,14098,2023,29511.825,10267.974,2406,250,0
+toliman,14099,2023,3.314,1.614,17,5,0
+tomatlan,14100,2023,21.137,8.402,50,14,0
+tonala,14101,2023,131.04,68.362,489,200,0
+tonaya,14102,2023,228.969,78.262,366,22,0
+tonila,14103,2023,,,,1,1
+tototlan,14105,2023,2116.809,1253.932,189,6,0
+tuxcueca,14107,2023,,,,1,1
+tuxpan,14108,2023,12.641,6.239,43,11,0
+union de san antonio,14109,2023,,,,1,1
+union de tula,14110,2023,,,,2,1
+valle de guadalupe,14111,2023,,,,2,1
+valle de juarez,14112,2023,2.993,0.725,17,4,0
+san gabriel,14113,2023,2.952,1.482,8,3,0
+villa corona,14114,2023,3.34,1.073,12,6,0
+villa guerrero,14115,2023,,,,2,1
+villa hidalgo,14116,2023,3.83,2.021,18,8,0
+yahualica de gonzalez gallo,14118,2023,,,,4,1
+zacoalco de torres,14119,2023,2.447,0.524,17,4,0
+zapopan,14120,2023,,,,438,1
+zapotiltic,14121,2023,12.655,7.626,61,15,0
+zapotitlan de vadillo,14122,2023,,,,2,1
+zapotlan del rey,14123,2023,,,,1,1
+zapotlanejo,14124,2023,11.123,-41.884,222,10,0
+san ignacio cerro gordo,14125,2023,104.831,33.9,97,7,0
