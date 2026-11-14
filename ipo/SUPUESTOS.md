@@ -34,6 +34,8 @@ Solo hay tres anclas públicas: 2017, 2022 y 2026. Para construir una serie anua
 4. Guardar la serie en `data/processed/inventario_agave.csv` con columnas `anio`, `plantas`, `hectareas`, `fuente`, `definicion`.
 5. Documentar el script que genera la serie en `ipo/src/serie_inventario.py`.
 
+**Implementación:** `python ipo/src/serie_inventario.py` genera `data/processed/inventario_agave.csv` con 10 filas (2017-2026). Los años 2018-2021 y 2023-2025 quedan marcados como `interpolado`. La columna `siembra_neta_plantas` es una derivada de la serie, no un dato observado.
+
 **Supuesto:** la interpolación lineal es una aproximación gruesa. No representa siembras reales año por año. Se usa solo para estimar tendencia y cohortes; no para afirmar que el inventario de un año específico fue exactamente ese.
 
 **Si aparece una serie anual de CRT/SIAP:** reemplazar la interpolación y actualizar este documento. Si no aparece antes del 14 de noviembre, se entrega la interpolación declarada.
