@@ -231,7 +231,7 @@ with tab_ipo:
 
     # Tequileras por municipio (DENUE)
     with col_a:
-        st.markdown("#### Tequileras por municipio (DENUE 312142)")
+        st.markdown("#### Tequileras por municipio (DENUE 312144)")
         d = filtrar_municipio(df_faltante("denue"), municipios)
         if d is not None:
             if d.empty:
