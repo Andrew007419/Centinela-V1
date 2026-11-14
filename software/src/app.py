@@ -104,6 +104,20 @@ VERDE = "#6DBE8C"  # verde agave (igual que .streamlit/config.toml)
 LEYENDA_ARRIBA = dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0)
 
 
+def columnas_tabla_censo() -> dict:
+    """Encabezados legibles y anchos (en píxeles) que dejan ver completos los nombres; el municipio queda fijo al desplazar."""
+    cc = st.column_config
+    return {
+        "municipio": cc.TextColumn("Municipio", width=150, pinned=True),
+        "clave_mun": cc.TextColumn("Clave", width=80, help="Clave INEGI de 5 dígitos (Jalisco = 14)."),
+        "confidencial": cc.TextColumn("Confidencial", width=120, help=datos.AVISO_CONFIDENCIAL),
+        "unidades_economicas": cc.NumberColumn("Unidades económicas", width=190),
+        "personal_ocupado": cc.NumberColumn("Personal ocupado", width=160),
+        "produccion_bruta": cc.NumberColumn("Producción bruta (millones de pesos)", width=310),
+        "valor_agregado": cc.NumberColumn("Valor agregado (millones de pesos)", width=300),
+    }
+
+
 def tarjetas_ipo(resp) -> None:
     """Tarjetas con el IPO del primer y último año de la serie del escenario elegido."""
     s = resp.datos["serie"]
@@ -287,65 +301,66 @@ with tab_ipo:
                     st.map(coords, latitude="lat", longitude="lon")
                 st.caption("El DENUE cuenta establecimientos, no productores agrícolas.")
 
-    # Censo
-    with col_b:
-        st.markdown("#### Censo Económico 2024")
-        nivel = st.radio("Nivel", ["Rama 3121 · industria de las bebidas", "Clase 312144 · elaboración de tequila"],
-                         horizontal=True, label_visibility="collapsed")
-        c = filtrar_municipio(df_faltante("censo" if nivel.startswith("Rama") else "censo_tequila"), municipios)
-        if c is not None:
-            st.info(datos.AVISO_CONFIDENCIAL)
-            if c.empty:
-                st.info("Sin datos del Censo para ese filtro (no todos los municipios tienen esa actividad).")
-            else:
-                r = datos.resumen_censo(c)
-
-                def total(col: str, etiqueta: str, decimales: int) -> None:
-                    suma, n = r[col]["suma"], r[col]["n_con_dato"]
-                    valor = "sin dato" if suma is None else f"{suma:,.{decimales}f}"
-                    metricas[col].metric(etiqueta, valor, help=f"Suma de los {n} de {r['municipios']} municipios con dato; "
-                                                              "los vacíos (confidenciales) no se suman.")
-
-                metricas = dict(zip(["ue", "personal_ocupado", "produccion_bruta"], st.columns(3)))
-                metricas["ue"].metric("Unidades económicas", f"{r['unidades_economicas']:,}",
-                                      help=f"Suma de {r['municipios']} municipios; esta variable siempre viene completa.")
-                total("personal_ocupado", "Personal ocupado", 0)
-                total("produccion_bruta", "Producción bruta (millones de pesos)", 1)
-                st.caption("Las sumas usan solo valores no vacíos y solo de los municipios mostrados: "
-                           "**no son el total estatal** (los municipios no se pueden sumar para obtenerlo).")
-                # placeholder: el navegador ignora el na_rep del Styler en celdas nulas de columnas numéricas
-                # y mostraba "None". Así las celdas siguen siendo numéricas (el orden al ordenar no cambia).
-                st.dataframe(
-                    datos.estilo_tabla_censo(c), hide_index=True, width="stretch", placeholder="—",
-                    column_config={"confidencial": st.column_config.TextColumn(
-                        "confidencial", help=datos.AVISO_CONFIDENCIAL, width="small")},
-                )
-                st.caption("El Censo 2024 describe el año 2023. Montos en millones de pesos a precios corrientes de 2023. "
-                           "El personal ocupado del Censo no equivale a puestos de trabajo afiliados al IMSS.")
-
     # Exportaciones (no se filtran por municipio)
-    st.markdown("#### Exportaciones de tequila")
-    x = df_faltante("comercio")
-    if x is not None and not x.empty:
-        serie_x = x.groupby("periodo", as_index=False)["valor_usd"].sum()
-        st.plotly_chart(go.Figure(go.Scatter(x=serie_x["periodo"], y=serie_x["valor_usd"], mode="lines", line=dict(color=VERDE),
-                                     hovertemplate="%{x}: %{y:,.0f} USD<extra></extra>")).update_layout(
-            height=340, yaxis_title="Valor exportado (USD)", xaxis_title="Mes (AAAA-MM)", margin=dict(t=50),
-            title=dict(text="Exportaciones mensuales de tequila, México (Banxico)", x=0)), width="stretch")
-        st.caption("Datos nacionales, solo tequila, valor en USD (Banxico). El filtro de municipio no aplica. "
-                   "El último año es parcial.")
+    with col_b:
+        st.markdown("#### Exportaciones de tequila")
+        x = df_faltante("comercio")
+        if x is not None and not x.empty:
+            serie_x = x.groupby("periodo", as_index=False)["valor_usd"].sum()
+            st.plotly_chart(go.Figure(go.Scatter(x=serie_x["periodo"], y=serie_x["valor_usd"], mode="lines", line=dict(color=VERDE),
+                                         hovertemplate="%{x}: %{y:,.0f} USD<extra></extra>")).update_layout(
+                height=340, yaxis_title="Valor exportado (USD)", xaxis_title="Mes (AAAA-MM)", margin=dict(t=50),
+                title=dict(text="Exportaciones mensuales de tequila, México (Banxico)", x=0)), width="stretch")
+            st.caption("Datos nacionales, solo tequila, valor en USD (Banxico). El filtro de municipio no aplica. "
+                       "El último año es parcial.")
 
-    # Serie de apoyo (opcional): UN Comtrade del Integrante 2. Si el archivo no existe, no se muestra nada.
-    comtrade = datos.cargar("comtrade")
-    if comtrade is not None and not comtrade.empty:
-        anual = datos.exportaciones_comtrade_anual(comtrade)
-        if anual is None:
-            st.warning("`comercio_2208_90.csv` no trae las columnas esperadas (`valor_usd` y `anio` o `periodo`).")
-        elif not anual.empty:
-            st.markdown("##### HS 220890 (todos los destilados), UN Comtrade")
-            st.plotly_chart(go.Figure(go.Bar(x=anual["anio"].astype(str), y=anual["valor_usd"], marker_color=VERDE,
-                                  hovertemplate="%{x}: %{y:,.0f} USD<extra></extra>")).update_layout(
-                height=320, yaxis_title="Valor exportado (USD)", xaxis_title="Año", margin=dict(t=50),
-                title=dict(text="Exportaciones anuales de HS 220890, total mundo (UN Comtrade)", x=0)), width="stretch")
-            st.caption("Serie de apoyo: incluye todos los destilados de la partida 220890, no solo tequila. "
-                       "Total Mundo por año (UN Comtrade).")
+        # Serie de apoyo (opcional): UN Comtrade del Integrante 2. Si el archivo no existe, no se muestra nada.
+        comtrade = datos.cargar("comtrade")
+        if comtrade is not None and not comtrade.empty:
+            anual = datos.exportaciones_comtrade_anual(comtrade)
+            if anual is None:
+                st.warning("`comercio_2208_90.csv` no trae las columnas esperadas (`valor_usd` y `anio` o `periodo`).")
+            elif not anual.empty:
+                st.markdown("##### HS 220890 (todos los destilados), UN Comtrade")
+                st.plotly_chart(go.Figure(go.Bar(x=anual["anio"].astype(str), y=anual["valor_usd"], marker_color=VERDE,
+                                      hovertemplate="%{x}: %{y:,.0f} USD<extra></extra>")).update_layout(
+                    height=320, yaxis_title="Valor exportado (USD)", xaxis_title="Año", margin=dict(t=50),
+                    title=dict(text="Exportaciones anuales de HS 220890, total mundo (UN Comtrade)", x=0)), width="stretch")
+                st.caption("Serie de apoyo: incluye todos los destilados de la partida 220890, no solo tequila. "
+                           "Total Mundo por año (UN Comtrade).")
+
+
+    st.divider()
+    # Censo
+    st.markdown("#### Censo Económico 2024")
+    nivel = st.radio("Nivel", ["Rama 3121 · industria de las bebidas", "Clase 312144 · elaboración de tequila"],
+                     horizontal=True, label_visibility="collapsed")
+    c = filtrar_municipio(df_faltante("censo" if nivel.startswith("Rama") else "censo_tequila"), municipios)
+    if c is not None:
+        st.info(datos.AVISO_CONFIDENCIAL)
+        if c.empty:
+            st.info("Sin datos del Censo para ese filtro (no todos los municipios tienen esa actividad).")
+        else:
+            r = datos.resumen_censo(c)
+
+            def total(col: str, etiqueta: str, decimales: int) -> None:
+                suma, n = r[col]["suma"], r[col]["n_con_dato"]
+                valor = "sin dato" if suma is None else f"{suma:,.{decimales}f}"
+                metricas[col].metric(etiqueta, valor, help=f"Suma de los {n} de {r['municipios']} municipios con dato; "
+                                                          "los vacíos (confidenciales) no se suman.")
+
+            metricas = dict(zip(["ue", "personal_ocupado", "produccion_bruta"], st.columns(3)))
+            metricas["ue"].metric("Unidades económicas", f"{r['unidades_economicas']:,}",
+                                  help=f"Suma de {r['municipios']} municipios; esta variable siempre viene completa.")
+            total("personal_ocupado", "Personal ocupado", 0)
+            total("produccion_bruta", "Producción bruta (millones de pesos)", 1)
+            st.caption("Las sumas usan solo valores no vacíos y solo de los municipios mostrados: "
+                       "**no son el total estatal** (los municipios no se pueden sumar para obtenerlo).")
+            # placeholder: el navegador ignora el na_rep del Styler en celdas nulas de columnas numéricas
+            # y mostraba "None". Así las celdas siguen siendo numéricas (el orden al ordenar no cambia).
+            st.dataframe(
+                datos.estilo_tabla_censo(c), hide_index=True, width="stretch", placeholder="—",
+                column_config=columnas_tabla_censo(),
+            )
+            st.caption("El Censo 2024 describe el año 2023. Montos en millones de pesos a precios corrientes de 2023. "
+                       "El personal ocupado del Censo no equivale a puestos de trabajo afiliados al IMSS.")
