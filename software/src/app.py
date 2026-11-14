@@ -194,6 +194,8 @@ tab_conteo, tab_calendario, tab_ipo = st.tabs(["1 · Conteo de plantas", "2 · C
 # ---------- 1. Conteo de plantas ----------
 with tab_conteo:
     st.subheader("Conteo de plantas")
+    st.caption("El modelo se entrenó con imágenes aéreas; en fotos de ángulo bajo o con plantas muy juntas puede contar de menos. "
+               "Ajusta la confianza mínima para explorar.")
     archivo = st.file_uploader("Sube una imagen o un video", type=["jpg", "jpeg", "png", "mp4", "mov", "avi"])
     vision, motivo = cargar_modulo_vision()
     if vision is None:
