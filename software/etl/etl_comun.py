@@ -23,6 +23,10 @@ class ArchivoFaltante(Exception):
     """El archivo original no está en data/raw/."""
 
 
+class DatosVacios(Exception):
+    """El filtro no dejó ninguna fila."""
+
+
 class ColumnaFaltante(Exception):
     """El archivo original no trae una columna necesaria."""
 
@@ -41,16 +45,19 @@ def normalizar_municipio(valor) -> str:
 
 
 def construir_clave_mun(cve_ent, cve_mun) -> str:
-    """Clave de 5 dígitos: entidad (2) + municipio (3). Ej.: Jalisco=14, Tequila=094 -> '14094'.
+    """Clave de 5 dígitos: entidad (2) + municipio (3), con ceros a la izquierda. Ej.: 14 + 94 -> '14094'.
 
-    Devuelve '' si alguna parte no es numérica.
+    Trabaja sobre texto (acepta '14', '094', 14 o 14.0). Devuelve '' si alguna parte no es numérica.
     """
-    try:
-        ent = f"{int(float(cve_ent)):02d}"
-        mun = f"{int(float(cve_mun)):03d}"
-    except (TypeError, ValueError):
+    ent, mun = _digitos(cve_ent), _digitos(cve_mun)
+    if not ent or not mun:
         return ""
-    return ent + mun
+    return ent.zfill(2) + mun.zfill(3)
+
+
+def _digitos(valor) -> str:
+    texto = re.sub(r"\.0+$", "", str(valor).strip())  # quita el '.0' de números leídos como float
+    return texto if texto.isdigit() else ""
 
 
 def clave_desde_completa(valor) -> str:
@@ -123,6 +130,6 @@ def ejecutar(func) -> None:
     """Corre un ETL mostrando errores claros (sin traceback) para fallas esperadas."""
     try:
         func()
-    except (ArchivoFaltante, ColumnaFaltante) as e:
+    except (ArchivoFaltante, ColumnaFaltante, DatosVacios) as e:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)

@@ -10,6 +10,8 @@ si el archivo trae columna de año, se usa esa.
 """
 import argparse
 
+import pandas as pd
+
 import etl_comun as c
 
 DESCARGA = (
@@ -46,8 +48,10 @@ def main() -> None:
         claves = [c.construir_clave_mun(e, m) for e, m in zip(df[col_ent], df[col_cmun])]
     else:
         claves = [c.clave_desde_completa(v) for v in df[col_clave]]
-    df = df.assign(_clave=claves)
+    df = df.assign(_clave=pd.Series(claves, index=df.index, dtype="object"))
     df = df[df["_clave"].str.startswith(c.CLAVE_JALISCO)]
+    if df.empty:
+        raise c.DatosVacios(f"Ninguna fila de Jalisco con la rama {RAMA} en el archivo; revisa que sea la tabla municipal de Jalisco.")
 
     salida = df.assign(
         municipio=df[col_mun].map(c.normalizar_municipio),
