@@ -94,8 +94,8 @@ def mostrar_resultado_video(res: dict) -> None:
 
 
 def rangos_calendario(serie: pd.DataFrame, margen: float = 1.1) -> tuple[float, float]:
-    """Topes de los ejes del calendario: máximo de los datos por `margen`. (oferta en millones de t, IPO)."""
-    tope_oferta = float(serie["oferta_madura_t"].max()) / 1e6 * margen
+    """Topes de los ejes del calendario: máximo de los datos por `margen`. (oferta y demanda en millones de t, IPO)."""
+    tope_oferta = max(float(serie["oferta_madura_t"].max()), float(serie["demanda_t"].max())) / 1e6 * margen
     tope_ipo = max(float(serie["ipo_max"].max()), float(serie["ipo"].max()), 1.0) * margen
     return tope_oferta, tope_ipo
 
@@ -234,25 +234,32 @@ with tab_calendario:
     tarjetas_ipo(resp)
     serie = pd.DataFrame(resp.datos["serie"])
 
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
-    fig.add_bar(x=serie["anio"], y=serie["oferta_madura_t"] / 1e6, name="Oferta madura (millones de t)", marker_color=VERDE, opacity=0.6,
-                  hovertemplate="%{x}: %{y:.2f} millones de t<extra></extra>", secondary_y=False)
-    fig.add_scatter(x=serie["anio"], y=serie["ipo_max"], mode="lines", line=dict(width=0), showlegend=False, hoverinfo="skip", secondary_y=True)
-    fig.add_scatter(
-        x=serie["anio"], y=serie["ipo_min"], mode="lines", line=dict(width=0), fill="tonexty",
-        fillcolor="rgba(214, 39, 40, 0.20)", name="Banda del IPO (mín–máx)", hoverinfo="skip", secondary_y=True,
+    # Dos gráficas apiladas que comparten el eje X (sin ejes duplicados).
+    fig = make_subplots(
+        rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.16, row_heights=[0.5, 0.5],
+        subplot_titles=("Oferta madura vs demanda (millones de t)", "IPO por año con banda de incertidumbre"),
     )
-    fig.add_scatter(x=serie["anio"], y=serie["ipo"], mode="lines+markers", line=dict(color="#d62728"), name="IPO (eje derecho)",
-                    hovertemplate="%{x}: IPO %{y:.2f}<extra></extra>", secondary_y=True)
-    fig.add_hline(y=1.0, line_dash="dot", line_color="gray", annotation_text="IPO = 1 (equilibrio)", secondary_y=True)
-    # Rangos fijos con 10% de margen sobre los datos (ambos ejes desde 0), para que no se corte nada.
-    # El eje del IPO incluye al menos 1.0 para que la línea punteada de IPO = 1 siempre se vea.
+    # Arriba: oferta madura (barras) y demanda (línea).
+    fig.add_bar(x=serie["anio"], y=serie["oferta_madura_t"] / 1e6, name="Oferta madura", marker_color=VERDE, opacity=0.65,
+                hovertemplate="Oferta madura: %{y:.2f} millones de t<extra></extra>", row=1, col=1)
+    fig.add_scatter(x=serie["anio"], y=serie["demanda_t"] / 1e6, mode="lines+markers", name="Demanda",
+                    line=dict(color="#F2C14E", width=3), hovertemplate="Demanda: %{y:.2f} millones de t<extra></extra>", row=1, col=1)
+    # Abajo: banda ipo_min–ipo_max con relleno suave, línea del IPO y referencia IPO = 1.
+    fig.add_scatter(x=serie["anio"], y=serie["ipo_max"], mode="lines", line=dict(width=0), showlegend=False,
+                    hoverinfo="skip", row=2, col=1)
+    fig.add_scatter(x=serie["anio"], y=serie["ipo_min"], mode="lines", line=dict(width=0), fill="tonexty",
+                    fillcolor="rgba(214, 39, 40, 0.18)", name="Banda del IPO (mín–máx)", hoverinfo="skip", row=2, col=1)
+    fig.add_scatter(x=serie["anio"], y=serie["ipo"], mode="lines+markers", line=dict(color="#d62728", width=3), name="IPO",
+                    hovertemplate="IPO: %{y:.2f}<extra></extra>", row=2, col=1)
+    fig.add_hline(y=1.0, line_dash="dot", line_color="gray", annotation_text="IPO = 1 (equilibrio)",
+                  annotation_position="top left", row=2, col=1)
+    # Ejes con 10% de margen sobre los datos (desde 0) para que nada se corte; el del IPO incluye siempre 1.0.
     tope_oferta, tope_ipo = rangos_calendario(serie)
-    fig.update_yaxes(title_text="Oferta madura (millones de t)", range=[0, tope_oferta], secondary_y=False)
-    fig.update_yaxes(title_text="IPO (oferta madura ÷ demanda, sin unidad)", range=[0, tope_ipo], secondary_y=True)
-    fig.update_xaxes(title_text="Año", dtick=1)
-    fig.update_layout(height=500, legend=LEYENDA_ARRIBA, margin=dict(t=90),
-                      title=dict(text=f"Oferta madura e IPO por año · escenario {escenario}", x=0))
+    fig.update_yaxes(title_text="Millones de t", range=[0, tope_oferta], row=1, col=1)
+    fig.update_yaxes(title_text="IPO (oferta ÷ demanda)", range=[0, tope_ipo], row=2, col=1)
+    fig.update_xaxes(dtick=1, showticklabels=True, row=1, col=1)
+    fig.update_xaxes(title_text="Año", dtick=1, row=2, col=1)
+    fig.update_layout(height=720, legend=LEYENDA_ARRIBA, margin=dict(t=110), hovermode="x unified")
     st.plotly_chart(fig, width="stretch")
     st.caption("La banda sombreada sale de la incertidumbre del factor plantas→toneladas (`ipo_min` a `ipo_max`).")
     recuadro_supuestos(resp)
