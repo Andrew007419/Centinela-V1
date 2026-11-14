@@ -282,11 +282,9 @@ with tab_ipo:
                 st.caption("Las sumas usan solo valores no vacíos y solo de los municipios mostrados: "
                            "**no son el total estatal** (los municipios no se pueden sumar para obtenerlo).")
                 st.dataframe(
-                    c.assign(confidencial=c["confidencial"].astype(bool))[
-                        ["municipio", "clave_mun", "unidades_economicas", "personal_ocupado",
-                         "produccion_bruta", "valor_agregado", "confidencial"]],
-                    hide_index=True, width="stretch",
-                    column_config={"confidencial": st.column_config.CheckboxColumn("confidencial", help=datos.AVISO_CONFIDENCIAL)},
+                    datos.estilo_tabla_censo(c), hide_index=True, width="stretch",
+                    column_config={"confidencial": st.column_config.TextColumn(
+                        "confidencial", help=datos.AVISO_CONFIDENCIAL, width="small")},
                 )
                 st.caption("El Censo 2024 describe el año 2023. Montos en millones de pesos a precios corrientes de 2023. "
                            "El personal ocupado del Censo no equivale a puestos de trabajo afiliados al IMSS.")
