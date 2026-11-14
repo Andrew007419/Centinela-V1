@@ -71,6 +71,14 @@ La demanda no es solo exportación. Se construye así:
 4. **Conversión:** llevar exportaciones a toneladas anuales solo si existe un factor documentado; si no, usarlas como **índice de tendencia** y no como toneladas.
 5. **Escenarios:** optimista, base y pesimista, con supuestos explícitos de crecimiento de demanda y de concentración de oferta.
 
+**Crecimiento usado:** optimista **+3% anual**, base **0%** y pesimista **-3%**, anclados en 2.18M t de 2025. El +3% se apoya en el consumo de agave del 1.er semestre 2026; el -3% en la caída de producción de tequila (-1.7%). Son supuestos del equipo, no un pronóstico.
+
+**Pesos de ventana:** optimista 30/40/30, base 25/50/25 y pesimista 15/70/15. La diferencia entre escenarios también cambia la forma en que se reparte la oferta, no solo la demanda.
+
+**Siembra futura:** para 2027-2028 se mantiene el último valor de siembra neta (332.25M plantas) solo porque esas cohortes alcanzan a madurar dentro del horizonte 2026-2034. Es un supuesto, no una proyección de siembra real.
+
+**Implementación:** `ipo/src/modelo.py` (cohortes y oferta), `ipo/src/demanda.py`, `ipo/src/escenarios.py` y `ipo/src/api.py` (endpoint). La serie de inventario se genera con `ipo/src/serie_inventario.py`.
+
 **Advertencia:** las exportaciones son un proxy de la demanda final, no la demanda total. No igualar exportaciones con consumo industrial.
 
 ## 6. Fórmula del IPO
