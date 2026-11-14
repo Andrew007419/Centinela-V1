@@ -8,7 +8,7 @@
 | # | Entregable | Ruta |
 |---|---|---|
 | 1 | Panel web (Streamlit) con 3 secciones | `software/src/app.py` |
-| 2 | ETL de DENUE 312144 (tequila), comercio 2208.90 y Censo 3121 | `software/etl/` |
+| 2 | ETL de DENUE 312144 (tequila), comercio de tequila (Banxico) y Censo 3121 | `software/etl/` |
 | 3 | Datos procesados con los formatos del contrato | `data/processed/` |
 | 4 | Carpeta de Drive abierta con datos y enlaces | `docs/ENLACES.md` |
 | 5 | Código reproducible desde cero | este README + `requirements.txt` |
@@ -34,7 +34,7 @@ Elementos que debe tener:
 | Dataset | Filtro | Archivo de salida |
 |---|---|---|
 | DENUE (INEGI) | Clase SCIAN **312144** (Elaboración de tequila), estado de Jalisco | `data/processed/denue_312142_jalisco.csv` |
-| Comercio exterior (DataMéxico) | Partida **2208.90** (tequila), Jalisco | `data/processed/comercio_2208_90.csv` |
+| Comercio exterior (Banxico, Cubo de Comercio Exterior) | Solo tequila (fracción 22089003 y subfracciones), serie mensual nacional, solo valor en USD | `data/processed/comercio_tequila_banxico.csv` |
 | Censo Económico 2024 (INEGI) | Rama **3121**, por municipio | `data/processed/censo_3121_municipal.csv` |
 
 Enlaces oficiales en `docs/ENLACES.md`. Para cada dataset anota en `data/README.md`: fecha de descarga, filtros aplicados y columnas usadas.
