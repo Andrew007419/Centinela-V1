@@ -257,10 +257,24 @@ with tab_ipo:
                 st.caption("Levantamiento de 2023.")
 
     # Exportaciones (no se filtran por municipio)
-    st.markdown("#### Exportaciones de tequila (partida 2208.90)")
+    st.markdown("#### Exportaciones de tequila")
     x = df_faltante("comercio")
     if x is not None and not x.empty:
         serie_x = x.groupby("periodo", as_index=False)["valor_usd"].sum()
         st.plotly_chart(go.Figure(go.Scatter(x=serie_x["periodo"], y=serie_x["valor_usd"], mode="lines+markers")).update_layout(
             height=320, yaxis_title="Valor (USD)", xaxis_title="Periodo", margin=dict(t=10)), width="stretch")
-        st.caption("Datos estatales; el filtro de municipio no aplica.")
+        st.caption("Datos nacionales, solo tequila, valor en USD (Banxico). El filtro de municipio no aplica. "
+                   "El último año es parcial.")
+
+    # Serie de apoyo (opcional): UN Comtrade del Integrante 2. Si el archivo no existe, no se muestra nada.
+    comtrade = datos.cargar("comtrade")
+    if comtrade is not None and not comtrade.empty:
+        anual = datos.exportaciones_comtrade_anual(comtrade)
+        if anual is None:
+            st.warning("`comercio_2208_90.csv` no trae las columnas esperadas (`valor_usd` y `anio` o `periodo`).")
+        elif not anual.empty:
+            st.markdown("##### HS 220890 (todos los destilados), UN Comtrade")
+            st.plotly_chart(go.Figure(go.Bar(x=anual["anio"].astype(str), y=anual["valor_usd"])).update_layout(
+                height=300, yaxis_title="Valor (USD)", xaxis_title="Año", margin=dict(t=10)), width="stretch")
+            st.caption("Serie de apoyo: incluye todos los destilados de la partida 220890, no solo tequila. "
+                       "Total Mundo por año (UN Comtrade).")
