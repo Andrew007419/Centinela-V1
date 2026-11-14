@@ -373,3 +373,9 @@ with tab_ipo:
             )
             st.caption("El Censo 2024 describe el año 2023. Montos en millones de pesos a precios corrientes de 2023. "
                        "El personal ocupado del Censo no equivale a puestos de trabajo afiliados al IMSS.")
+
+# ---------- Pie de página ----------
+st.divider()
+st.caption("Fuentes: DENUE (INEGI), mayo 2026 · Banxico, Cubo de Comercio Exterior · UN Comtrade, HS 220890 · "
+           "Censos Económicos 2024 (INEGI) · IPO con supuestos en `ipo/SUPUESTOS.md`. "
+           "Desarrollado con apoyo de Claude Code.")
