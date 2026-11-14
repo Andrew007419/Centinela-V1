@@ -100,6 +100,23 @@ def rangos_calendario(serie: pd.DataFrame, margen: float = 1.1) -> tuple[float, 
     return tope_oferta, tope_ipo
 
 
+VERDE = "#6DBE8C"  # verde agave (igual que .streamlit/config.toml)
+LEYENDA_ARRIBA = dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0)
+
+
+def tarjetas_ipo(resp) -> None:
+    """Tarjetas con el IPO del primer y último año de la serie del escenario elegido."""
+    s = resp.datos["serie"]
+    a, b = s[0], s[-1]
+    ej = " (ejemplo)" if resp.es_ejemplo else ""
+    ayuda = "IPO = oferta madura ÷ demanda. Arriba de 1.0 hay más agave maduro que demanda; la banda es {:.2f} a {:.2f}."
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric(f"IPO {a['anio']}{ej}", f"{a['ipo']:.2f}", help=ayuda.format(a["ipo_min"], a["ipo_max"]))
+    c2.metric(f"IPO {b['anio']}{ej}", f"{b['ipo']:.2f}", help=ayuda.format(b["ipo_min"], b["ipo_max"]))
+    c3.metric(f"Oferta madura {b['anio']}{ej}", f"{b['oferta_madura_t'] / 1e6:.1f} M t", help="Millones de toneladas de agave maduro.")
+    c4.metric(f"Demanda {b['anio']}{ej}", f"{b['demanda_t'] / 1e6:.1f} M t", help="Millones de toneladas que la industria puede absorber.")
+
+
 def aviso_ejemplo_ipo(resp) -> None:
     if resp.es_ejemplo:
         st.warning("⚠️ **DATOS DE EJEMPLO**: la API del IPO no responde; "
@@ -192,6 +209,7 @@ with tab_conteo:
                 else:
                     mostrar_resultado_imagen(res)
     else:
+        st.metric("Plantas detectadas", "—", help="Sube una imagen o un video para ver el conteo.")
         st.caption("Sube un archivo para ver el conteo.")
 
 # ---------- 2. Calendario de madurez ----------
@@ -199,24 +217,28 @@ with tab_calendario:
     st.subheader("Calendario de madurez")
     resp = ipo_cacheado(escenario)
     aviso_ejemplo_ipo(resp)
+    tarjetas_ipo(resp)
     serie = pd.DataFrame(resp.datos["serie"])
 
     fig = make_subplots(specs=[[{"secondary_y": True}]])
-    fig.add_bar(x=serie["anio"], y=serie["oferta_madura_t"] / 1e6, name="Oferta madura (millones t)", opacity=0.55, secondary_y=False)
+    fig.add_bar(x=serie["anio"], y=serie["oferta_madura_t"] / 1e6, name="Oferta madura (millones de t)", marker_color=VERDE, opacity=0.6,
+                  hovertemplate="%{x}: %{y:.2f} millones de t<extra></extra>", secondary_y=False)
     fig.add_scatter(x=serie["anio"], y=serie["ipo_max"], mode="lines", line=dict(width=0), showlegend=False, hoverinfo="skip", secondary_y=True)
     fig.add_scatter(
         x=serie["anio"], y=serie["ipo_min"], mode="lines", line=dict(width=0), fill="tonexty",
-        fillcolor="rgba(214, 39, 40, 0.20)", name="Banda IPO (mín–máx)", secondary_y=True,
+        fillcolor="rgba(214, 39, 40, 0.20)", name="Banda del IPO (mín–máx)", hoverinfo="skip", secondary_y=True,
     )
-    fig.add_scatter(x=serie["anio"], y=serie["ipo"], mode="lines+markers", line=dict(color="#d62728"), name="IPO", secondary_y=True)
-    fig.add_hline(y=1.0, line_dash="dot", line_color="gray", annotation_text="IPO = 1", secondary_y=True)
+    fig.add_scatter(x=serie["anio"], y=serie["ipo"], mode="lines+markers", line=dict(color="#d62728"), name="IPO (eje derecho)",
+                    hovertemplate="%{x}: IPO %{y:.2f}<extra></extra>", secondary_y=True)
+    fig.add_hline(y=1.0, line_dash="dot", line_color="gray", annotation_text="IPO = 1 (equilibrio)", secondary_y=True)
     # Rangos fijos con 10% de margen sobre los datos (ambos ejes desde 0), para que no se corte nada.
     # El eje del IPO incluye al menos 1.0 para que la línea punteada de IPO = 1 siempre se vea.
     tope_oferta, tope_ipo = rangos_calendario(serie)
     fig.update_yaxes(title_text="Oferta madura (millones de t)", range=[0, tope_oferta], secondary_y=False)
-    fig.update_yaxes(title_text="IPO (oferta / demanda)", range=[0, tope_ipo], secondary_y=True)
+    fig.update_yaxes(title_text="IPO (oferta madura ÷ demanda, sin unidad)", range=[0, tope_ipo], secondary_y=True)
     fig.update_xaxes(title_text="Año", dtick=1)
-    fig.update_layout(height=480, legend=dict(orientation="h", y=-0.2), margin=dict(t=20))
+    fig.update_layout(height=500, legend=LEYENDA_ARRIBA, margin=dict(t=90),
+                      title=dict(text=f"Oferta madura e IPO por año · escenario {escenario}", x=0))
     st.plotly_chart(fig, width="stretch")
     st.caption("La banda sombreada sale de la incertidumbre del factor plantas→toneladas (`ipo_min` a `ipo_max`).")
     recuadro_supuestos(resp)
@@ -230,13 +252,17 @@ with tab_ipo:
     resps = {e: ipo_cacheado(e) for e in ESCENARIOS}
     if any(r.es_ejemplo for r in resps.values()):
         aviso_ejemplo_ipo(next(r for r in resps.values() if r.es_ejemplo))
+    tarjetas_ipo(resps[escenario])
     fig = go.Figure()
     for e, r in resps.items():
         s = pd.DataFrame(r.datos["serie"])
-        fig.add_scatter(x=s["anio"], y=s["ipo"], mode="lines+markers", name=e + (" (ejemplo)" if r.es_ejemplo else ""),
+        fig.add_scatter(x=s["anio"], y=s["ipo"], mode="lines+markers", name=e.capitalize() + (" (ejemplo)" if r.es_ejemplo else ""),
+                        hovertemplate="%{x}: IPO %{y:.2f}<extra>" + e.capitalize() + "</extra>",
                         line=dict(width=4 if e == escenario else 2))
-    fig.add_hline(y=1.0, line_dash="dot", line_color="gray")
-    fig.update_layout(height=380, yaxis_title="IPO", xaxis_title="Año", margin=dict(t=20))
+    fig.add_hline(y=1.0, line_dash="dot", line_color="gray", annotation_text="IPO = 1 (equilibrio)")
+    fig.update_layout(height=420, yaxis_title="IPO (oferta madura ÷ demanda, sin unidad)", xaxis_title="Año",
+                      xaxis=dict(dtick=1), legend=LEYENDA_ARRIBA, margin=dict(t=90),
+                      title=dict(text="IPO por escenario (el elegido va más grueso)", x=0))
     st.plotly_chart(fig, width="stretch")
     recuadro_supuestos(resps[escenario])
 
@@ -252,8 +278,10 @@ with tab_ipo:
                 st.info("Sin establecimientos para ese filtro.")
             else:
                 cuenta = d.groupby("municipio").size().sort_values().rename("establecimientos").reset_index()
-                st.plotly_chart(go.Figure(go.Bar(x=cuenta["establecimientos"], y=cuenta["municipio"].map(datos.nombre_bonito), orientation="h")).update_layout(
-                    height=max(250, 22 * len(cuenta)), margin=dict(t=10), xaxis_title="Establecimientos"), width="stretch")
+                st.plotly_chart(go.Figure(go.Bar(x=cuenta["establecimientos"], y=cuenta["municipio"].map(datos.nombre_bonito), orientation="h",
+                                       marker_color=VERDE)).update_layout(
+                    height=max(280, 22 * len(cuenta) + 70), margin=dict(t=50), xaxis_title="Establecimientos (número)",
+                    title=dict(text="Establecimientos de elaboración de tequila por municipio", x=0)), width="stretch")
                 coords = d.dropna(subset=["lat", "lon"])
                 if not coords.empty:
                     st.map(coords, latitude="lat", longitude="lon")
@@ -298,8 +326,10 @@ with tab_ipo:
     x = df_faltante("comercio")
     if x is not None and not x.empty:
         serie_x = x.groupby("periodo", as_index=False)["valor_usd"].sum()
-        st.plotly_chart(go.Figure(go.Scatter(x=serie_x["periodo"], y=serie_x["valor_usd"], mode="lines+markers")).update_layout(
-            height=320, yaxis_title="Valor (USD)", xaxis_title="Periodo", margin=dict(t=10)), width="stretch")
+        st.plotly_chart(go.Figure(go.Scatter(x=serie_x["periodo"], y=serie_x["valor_usd"], mode="lines", line=dict(color=VERDE),
+                                     hovertemplate="%{x}: %{y:,.0f} USD<extra></extra>")).update_layout(
+            height=340, yaxis_title="Valor exportado (USD)", xaxis_title="Mes (AAAA-MM)", margin=dict(t=50),
+            title=dict(text="Exportaciones mensuales de tequila, México (Banxico)", x=0)), width="stretch")
         st.caption("Datos nacionales, solo tequila, valor en USD (Banxico). El filtro de municipio no aplica. "
                    "El último año es parcial.")
 
@@ -311,7 +341,9 @@ with tab_ipo:
             st.warning("`comercio_2208_90.csv` no trae las columnas esperadas (`valor_usd` y `anio` o `periodo`).")
         elif not anual.empty:
             st.markdown("##### HS 220890 (todos los destilados), UN Comtrade")
-            st.plotly_chart(go.Figure(go.Bar(x=anual["anio"].astype(str), y=anual["valor_usd"])).update_layout(
-                height=300, yaxis_title="Valor (USD)", xaxis_title="Año", margin=dict(t=10)), width="stretch")
+            st.plotly_chart(go.Figure(go.Bar(x=anual["anio"].astype(str), y=anual["valor_usd"], marker_color=VERDE,
+                                  hovertemplate="%{x}: %{y:,.0f} USD<extra></extra>")).update_layout(
+                height=320, yaxis_title="Valor exportado (USD)", xaxis_title="Año", margin=dict(t=50),
+                title=dict(text="Exportaciones anuales de HS 220890, total mundo (UN Comtrade)", x=0)), width="stretch")
             st.caption("Serie de apoyo: incluye todos los destilados de la partida 220890, no solo tequila. "
                        "Total Mundo por año (UN Comtrade).")
