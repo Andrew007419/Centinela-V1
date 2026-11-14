@@ -74,7 +74,7 @@ GET /ipo?escenario=base&anio_inicio=2026&anio_fin=2034
 
 | Archivo | Columnas mínimas | Lo genera |
 |---|---|---|
-| `denue_312142_jalisco.csv` | `nombre`, `municipio`, `clave_mun`, `lat`, `lon`, `estrato_personal` | Integrante 3 |
+| `denue_312144_jalisco.csv` | `nombre`, `municipio`, `clave_mun`, `lat`, `lon`, `estrato_personal` | Integrante 3 |
 | `comercio_2208_90.csv` | `periodo`, `valor_usd`, `volumen`, `unidad`, `destino` | Integrante 3 |
 | `censo_3121_municipal.csv` | `municipio`, `clave_mun`, `anio`, `produccion_bruta`, `valor_agregado`, `personal_ocupado` | Integrante 3 |
 | `inventario_agave.csv` | `anio`, `plantas`, `hectareas`, `fuente`, `definicion` | Integrante 2 (con apoyo de Int. 3) |

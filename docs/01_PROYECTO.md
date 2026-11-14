@@ -42,8 +42,8 @@ Los tres pilares siguen presentes: **mecatrónica** (diseño), **Machine Learnin
 
 | Dataset | Qué usamos | Para qué |
 |---|---|---|
-| DENUE (INEGI), clase SCIAN **312142** | Tequileras por municipio, ubicación y estrato de personal | Dónde está la demanda y qué tamaño tiene |
-| Comercio exterior (DataMéxico), partida **2208.90** | Valor y volumen exportado de tequila, destino | Tendencia de la demanda final |
+| DENUE (INEGI), clase SCIAN **312144** | Tequileras por municipio, ubicación y estrato de personal | Dónde está la demanda y qué tamaño tiene |
+| Comercio exterior (DataMéxico; respaldo UN Comtrade), HS **220890** | Valor y volumen exportado, destino | Tendencia de la demanda final |
 | Censo Económico 2024 (INEGI), rama **3121** | Producción bruta, valor agregado, personal ocupado | Tamaño y concentración de la industria compradora |
 
 ## Limitaciones que debemos decir con honestidad
