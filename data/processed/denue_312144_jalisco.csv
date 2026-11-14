@@ -1,4 +1,4 @@
-id,clee,nombre,municipio,cve_mun,lat,lon,estrato_personal,codigo_act,actividad,fecha_alta_denue
+id,clee,nombre,municipio,clave_mun,lat,lon,estrato_personal,codigo_act,actividad,fecha_alta_denue
 6337836,14001312142000025013006420S2,TEQUILA SAN MATIAS DE JALISCO,Acatic,001,20.72477326,-102.8866444,0 a 5 personas,312144,Elaboración de tequila,2010-07
 6341212,14001312142000031010006420S0,TEQUILA SAN MATIAS DE JALISCO,Acatic,001,20.77153814,-102.90940579,0 a 5 personas,312144,Elaboración de tequila,2014-12
 6341213,14001312142000051010006420S8,TEQUILA SAN MATIAS DE JALISCO,Acatic,001,20.7716804,-102.90942308,0 a 5 personas,312144,Elaboración de tequila,2014-12
