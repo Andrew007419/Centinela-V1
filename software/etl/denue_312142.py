@@ -1,10 +1,13 @@
-"""ETL del DENUE: clase SCIAN 312142 (elaboración de bebidas destiladas de agave), Jalisco.
+"""ETL del DENUE: clase SCIAN 312144 (Elaboración de tequila), Jalisco.
+
+Nota: la ficha original citaba 312142, de una versión anterior del SCIAN; en el DENUE actual
+esa clase no existe. El nombre del script y del CSV conservan "312142" por el contrato.
 
 Entrada : data/raw/denue*.csv   (descarga del DENUE, ver mensaje de error)
 Salida  : data/processed/denue_312142_jalisco.csv
 Columnas: nombre, municipio, clave_mun, lat, lon, estrato_personal
 
-Uso: python software/etl/denue_312142.py [--clase 312142]
+Uso: python software/etl/denue_312142.py [--clase 312144]
 El archivo original puede ser el DENUE completo de Jalisco (todas las actividades); se filtra aquí.
 """
 import argparse
@@ -15,10 +18,10 @@ import etl_comun as c
 
 DESCARGA = (
     "  DENUE (INEGI) -> https://www.inegi.org.mx/app/mapa/denue/ (sección 'Descarga').\n"
-    "  Descarga los datos de Jalisco con actividad 312142 en formato CSV y guárdalos como\n"
-    "  data/raw/denue_312142.csv (o cualquier nombre que empiece con 'denue')."
+    "  Descarga los datos de Jalisco con actividad 312144 (Elaboración de tequila) en formato CSV y guárdalos como\n"
+    "  data/raw/denue_312144.csv (o cualquier nombre que empiece con 'denue')."
 )
-CLASE = "312142"  # clase indicada en software/README.md
+CLASE = "312144"  # Elaboración de tequila (SCIAN vigente en el DENUE)
 
 
 def main() -> None:
