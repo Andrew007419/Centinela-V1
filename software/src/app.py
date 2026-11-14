@@ -108,7 +108,7 @@ def columnas_tabla_censo() -> dict:
     """Encabezados legibles y anchos (en píxeles) que dejan ver completos los nombres; el municipio queda fijo al desplazar."""
     cc = st.column_config
     return {
-        "municipio": cc.TextColumn("Municipio", width=150, pinned=True),
+        "municipio": cc.TextColumn("Municipio", width=240, pinned=True),
         "clave_mun": cc.TextColumn("Clave", width=80, help="Clave INEGI de 5 dígitos (Jalisco = 14)."),
         "confidencial": cc.TextColumn("Confidencial", width=120, help=datos.AVISO_CONFIDENCIAL),
         "unidades_economicas": cc.NumberColumn("Unidades económicas", width=190),
