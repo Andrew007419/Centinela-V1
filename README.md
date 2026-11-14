@@ -51,6 +51,32 @@ centinela-agave/
 └── .github/                   <- plantilla de Pull Request y CODEOWNERS
 ```
 
+## Inicio rápido
+
+Para correr el panel y la API del IPO en tu computadora (probado con Python 3.13 en Windows). Todos los comandos se ejecutan desde la raíz del repositorio:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate            # Windows (PowerShell): .venv\Scripts\Activate.ps1
+pip install -r software/requirements.txt
+pip install -r ipo/requirements.txt
+pip install -r vision/requirements.txt
+
+python -m pytest -q ipo/tests        # tests del IPO (33)
+
+# Terminal 1: API del IPO (http://127.0.0.1:8000/docs)
+uvicorn ipo.src.api:app --reload
+
+# Terminal 2: panel (http://localhost:8501)
+streamlit run software/src/app.py
+```
+
+- Instala los tres `requirements.txt` en ese orden. La instalación tarda unos 3 minutos, sobre todo por PyTorch (lo trae `ultralytics`, de `vision/requirements.txt`).
+- Los tests se corren con `python -m pytest`. Un `pytest` a secas **falla** (`No module named 'ipo'`), porque no encuentra el paquete `ipo` desde la raíz.
+- En Windows, clona el repositorio en una ruta corta (menos de unos 60 caracteres, por ejemplo `C:\proyectos\Centinela-V1`). Con rutas muy largas la instalación de `streamlit` falla con `WinError 206` (nombre de archivo demasiado largo).
+- Si la API no está corriendo, el panel funciona con datos de ejemplo marcados como tales.
+- Más detalle del panel y de los datos en `software/README.md`.
+
 ## Cómo empezar
 
 1. Lee `docs/01_PROYECTO.md` (10 minutos).
