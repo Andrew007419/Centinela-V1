@@ -1,0 +1,25 @@
+{
+  "escenario": "base",
+  "factor_plantas_a_toneladas": {"min": 0.02, "base": 0.04, "max": 0.06, "unidad": "t/planta"},
+  "ventana_maduracion_anios": [6, 7, 8],
+  "serie": [
+    {"anio": 2026, "oferta_madura_plantas": 40000000, "oferta_madura_t": 1600000, "demanda_t": 2200000, "ipo": 0.73, "ipo_min": 0.36, "ipo_max": 1.09},
+    {"anio": 2027, "oferta_madura_plantas": 55000000, "oferta_madura_t": 2200000, "demanda_t": 2250000, "ipo": 0.98, "ipo_min": 0.49, "ipo_max": 1.47},
+    {"anio": 2028, "oferta_madura_plantas": 80000000, "oferta_madura_t": 3200000, "demanda_t": 2300000, "ipo": 1.39, "ipo_min": 0.70, "ipo_max": 2.09},
+    {"anio": 2029, "oferta_madura_plantas": 110000000, "oferta_madura_t": 4400000, "demanda_t": 2350000, "ipo": 1.87, "ipo_min": 0.94, "ipo_max": 2.81},
+    {"anio": 2030, "oferta_madura_plantas": 150000000, "oferta_madura_t": 6000000, "demanda_t": 2400000, "ipo": 2.50, "ipo_min": 1.25, "ipo_max": 3.75},
+    {"anio": 2031, "oferta_madura_plantas": 190000000, "oferta_madura_t": 7600000, "demanda_t": 2450000, "ipo": 3.10, "ipo_min": 1.55, "ipo_max": 4.65},
+    {"anio": 2032, "oferta_madura_plantas": 230000000, "oferta_madura_t": 9200000, "demanda_t": 2500000, "ipo": 3.68, "ipo_min": 1.84, "ipo_max": 5.52},
+    {"anio": 2033, "oferta_madura_plantas": 260000000, "oferta_madura_t": 10400000, "demanda_t": 2550000, "ipo": 4.08, "ipo_min": 2.04, "ipo_max": 6.12},
+    {"anio": 2034, "oferta_madura_plantas": 280000000, "oferta_madura_t": 11200000, "demanda_t": 2600000, "ipo": 4.31, "ipo_min": 2.15, "ipo_max": 6.46}
+  ],
+  "supuestos": [
+    "EJEMPLO (no es dato real): factor plantas a toneladas de 0.02 / 0.04 / 0.06 t/planta inventado solo para probar el panel.",
+    "EJEMPLO (no es dato real): demanda de 2.2 millones de t creciendo 50 mil t por año, inventada para probar el panel.",
+    "EJEMPLO (no es dato real): este archivo solo trae el escenario base; el selector de escenario no cambia estos números."
+  ],
+  "fuentes": [
+    "EJEMPLO: datos de ejemplo de software/src/ejemplo_ipo.json, no provienen de ninguna fuente oficial.",
+    "Las fuentes reales las entrega el endpoint /ipo del Integrante 2."
+  ]
+}
