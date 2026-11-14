@@ -95,11 +95,11 @@ def mostrar_resultado_video(res: dict) -> None:
 
 def aviso_ejemplo_ipo(resp) -> None:
     if resp.es_ejemplo:
-        st.warning(
-            "⚠️ **DATOS DE EJEMPLO** — la API del IPO no respondió, así que estos números "
-            "salen de `software/src/ejemplo_ipo.json` y **no son resultados reales**. "
-            f"Detalle: {resp.motivo}",
-        )
+        st.warning("⚠️ **DATOS DE EJEMPLO**: la API del IPO no responde; "
+                   "los números de las pestañas 2 y 3 no son reales.")
+        with st.expander("Detalle técnico", expanded=False):
+            st.write("Se usa `software/src/ejemplo_ipo.json`, con cifras inventadas solo para probar el panel.")
+            st.code(resp.motivo or "Sin detalle", language=None)
 
 
 def recuadro_supuestos(resp) -> None:
