@@ -80,8 +80,22 @@ def estilo_tabla_censo(df: pd.DataFrame):
     vista = df[["municipio", "clave_mun", "confidencial", "unidades_economicas",
                 "personal_ocupado", "produccion_bruta", "valor_agregado"]].copy()
     vista["confidencial"] = vista["confidencial"].map({1: "sí", 0: "no"})
+    vista["municipio"] = vista["municipio"].map(nombre_bonito)
     return vista.style.format(
         {"unidades_economicas": "{:,.0f}", "personal_ocupado": "{:,.0f}",
          "produccion_bruta": "{:,.3f}", "valor_agregado": "{:,.3f}"},
         na_rep="—",
     )
+
+
+_PARTICULAS = {"de", "del", "la", "las", "los", "el", "y", "en"}
+
+
+def nombre_bonito(municipio: str) -> str:
+    """Solo para mostrar: 'atotonilco el alto' -> 'Atotonilco el Alto'.
+
+    Los datos y los filtros siguen usando el nombre normalizado (minúsculas, sin acentos);
+    por eso los acentos no se pueden restaurar aquí.
+    """
+    palabras = str(municipio).split()
+    return " ".join(p if (i > 0 and p in _PARTICULAS) else p.capitalize() for i, p in enumerate(palabras))

@@ -1,0 +1,13 @@
+# Tema del panel Centinela·Agave (solo apariencia). Se aplica al correr: streamlit run software/src/app.py
+# desde la raíz del repositorio.
+
+[theme]
+base = "dark"
+primaryColor = "#6DBE8C"            # verde agave
+backgroundColor = "#0F1A15"         # fondo oscuro sobrio
+secondaryBackgroundColor = "#172620"
+textColor = "#E6EEE9"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"             # oculta el botón Deploy y deja solo lo esencial
