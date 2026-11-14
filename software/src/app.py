@@ -313,8 +313,10 @@ with tab_ipo:
                 total("produccion_bruta", "Producción bruta (millones de pesos)", 1)
                 st.caption("Las sumas usan solo valores no vacíos y solo de los municipios mostrados: "
                            "**no son el total estatal** (los municipios no se pueden sumar para obtenerlo).")
+                # placeholder: el navegador ignora el na_rep del Styler en celdas nulas de columnas numéricas
+                # y mostraba "None". Así las celdas siguen siendo numéricas (el orden al ordenar no cambia).
                 st.dataframe(
-                    datos.estilo_tabla_censo(c), hide_index=True, width="stretch",
+                    datos.estilo_tabla_censo(c), hide_index=True, width="stretch", placeholder="—",
                     column_config={"confidencial": st.column_config.TextColumn(
                         "confidencial", help=datos.AVISO_CONFIDENCIAL, width="small")},
                 )
