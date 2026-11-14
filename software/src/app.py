@@ -93,6 +93,13 @@ def mostrar_resultado_video(res: dict) -> None:
     st.caption("El video se codifica en mp4v; si el navegador no lo reproduce, descárgalo.")
 
 
+def rangos_calendario(serie: pd.DataFrame, margen: float = 1.1) -> tuple[float, float]:
+    """Topes de los ejes del calendario: máximo de los datos por `margen`. (oferta en millones de t, IPO)."""
+    tope_oferta = float(serie["oferta_madura_t"].max()) / 1e6 * margen
+    tope_ipo = max(float(serie["ipo_max"].max()), float(serie["ipo"].max()), 1.0) * margen
+    return tope_oferta, tope_ipo
+
+
 def aviso_ejemplo_ipo(resp) -> None:
     if resp.es_ejemplo:
         st.warning("⚠️ **DATOS DE EJEMPLO**: la API del IPO no responde; "
@@ -199,8 +206,11 @@ with tab_calendario:
     )
     fig.add_scatter(x=serie["anio"], y=serie["ipo"], mode="lines+markers", line=dict(color="#d62728"), name="IPO", secondary_y=True)
     fig.add_hline(y=1.0, line_dash="dot", line_color="gray", annotation_text="IPO = 1", secondary_y=True)
-    fig.update_yaxes(title_text="Oferta madura (millones de t)", secondary_y=False)
-    fig.update_yaxes(title_text="IPO (oferta / demanda)", secondary_y=True)
+    # Rangos fijos con 10% de margen sobre los datos (ambos ejes desde 0), para que no se corte nada.
+    # El eje del IPO incluye al menos 1.0 para que la línea punteada de IPO = 1 siempre se vea.
+    tope_oferta, tope_ipo = rangos_calendario(serie)
+    fig.update_yaxes(title_text="Oferta madura (millones de t)", range=[0, tope_oferta], secondary_y=False)
+    fig.update_yaxes(title_text="IPO (oferta / demanda)", range=[0, tope_ipo], secondary_y=True)
     fig.update_xaxes(title_text="Año", dtick=1)
     fig.update_layout(height=480, legend=dict(orientation="h", y=-0.2), margin=dict(t=20))
     st.plotly_chart(fig, width="stretch")
