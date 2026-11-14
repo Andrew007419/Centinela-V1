@@ -85,7 +85,10 @@ Si falta el archivo original, el ETL termina con un mensaje que dice qué descar
 3. Pega los enlaces en `docs/ENLACES.md`.
 
 ## Reproducibilidad
-- Versiones fijas en `requirements.txt` cuando todo funcione (`pip freeze` de lo que usas).
+- Versiones fijas, según el estado actual:
+  - `software/requirements.txt` fija con `==` las dependencias directas del panel (streamlit 1.67.0, pandas 3.1.1, numpy 2.5.4, plotly 7.1.0, requests 2.34.2, pillow 13.0.0), tomadas del entorno donde se probó el panel. `ipo/requirements.txt` ya fija las suyas.
+  - `torch` **no se fija** a propósito: la versión y el build dependen de la plataforma (Windows o Linux, CPU o GPU), y `pip` elige el adecuado al instalar `ultralytics`.
+  - `vision/requirements.txt` (Integrante 1) todavía no fija versiones, así que `ultralytics`, `opencv-python` y `torch` pueden variar entre instalaciones. `vision/requirements-local-lock.txt` guarda el `pip freeze` de la instalación local de visión, como referencia.
 - Semillas fijas (`seed=42`).
 - Prueba **desde cero** en otra computadora o en un entorno nuevo el día 4.
 
