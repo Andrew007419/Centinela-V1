@@ -69,3 +69,19 @@ def exportaciones_comtrade_anual(df: pd.DataFrame) -> pd.DataFrame | None:
     if "anio" not in df.columns:
         df = df.assign(anio=df["periodo"].astype(str).str[:4])
     return df.groupby("anio", as_index=False)["valor_usd"].sum()
+
+
+def estilo_tabla_censo(df: pd.DataFrame):
+    """Tabla del Censo para mostrar: celdas vacías (confidenciales) como "—", no como None.
+
+    Solo cambia cómo se ve; los datos no se tocan y la tabla sigue ordenándose por valor.
+    `confidencial` va antes de las columnas numéricas para que no quede cortada por el ancho.
+    """
+    vista = df[["municipio", "clave_mun", "confidencial", "unidades_economicas",
+                "personal_ocupado", "produccion_bruta", "valor_agregado"]].copy()
+    vista["confidencial"] = vista["confidencial"].map({1: "sí", 0: "no"})
+    return vista.style.format(
+        {"unidades_economicas": "{:,.0f}", "personal_ocupado": "{:,.0f}",
+         "produccion_bruta": "{:,.3f}", "valor_agregado": "{:,.3f}"},
+        na_rep="—",
+    )
