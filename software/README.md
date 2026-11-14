@@ -50,7 +50,7 @@ Enlaces oficiales en `docs/ENLACES.md`. Para cada dataset anota en `data/README.
 ## Cómo correr el panel (esto debe funcionar en una computadora limpia)
 ```bash
 python -m venv .venv
-source .venv/bin/activate            # En Windows: .venv\Scripts\activate
+source .venv/bin/activate            # Windows (PowerShell): .venv\Scripts\Activate.ps1
 pip install -r software/requirements.txt
 pip install -r ipo/requirements.txt
 pip install -r vision/requirements.txt
@@ -62,6 +62,22 @@ uvicorn ipo.src.api:app --reload
 streamlit run software/src/app.py
 ```
 Si todavía no existen el endpoint o los pesos de visión, el panel debe usar **datos de ejemplo** marcados como tales, para poder avanzar en paralelo.
+
+## Regenerar los datos
+
+**No hace falta para correr el panel:** los CSV de `data/processed/` ya vienen en el repositorio. Esto es solo para reproducir los CSV desde los archivos originales.
+
+1. Descarga los originales de la carpeta `datos_originales` de Drive (enlace en `docs/ENLACES.md`: https://drive.google.com/drive/folders/1S-G3pQW4yxLqE7NSIUQljxVglqNfdo5V?usp=sharing).
+2. Crea la carpeta `data/raw/` (está en `.gitignore`, no viene en el repo) y deja ahí los archivos. Cada ETL toma el primer `.csv` cuyo nombre empiece con `denue`, `comercio` o `censo`, así que los nombres de Drive sirven tal cual. El DENUE viene comprimido: descomprime `denue_jalisco_2026-05.zip` y deja el CSV.
+3. Desde la raíz del repositorio, con el entorno activado, corre el ETL que necesites:
+
+| Dataset | Original en Drive | Comando | Genera en `data/processed/` |
+|---|---|---|---|
+| DENUE, clase 312144 (tequila), Jalisco | `denue_jalisco_2026-05.zip` | `python software/etl/denue_312142.py` | `denue_312142_jalisco.csv` |
+| Comercio exterior de tequila (Banxico) | `comercio_banxico_2026-11-13.csv` | `python software/etl/comercio_2208_90.py` | `comercio_tequila_banxico.csv` |
+| Censo Económico 2024 (SAIC), rama 3121 y clase 312144 | `censo_saic_2023_jalisco.csv` | `python software/etl/censo_3121.py` | `censo_3121_municipal.csv` y `censo_312144_tequila_municipal.csv` |
+
+Si falta el archivo original, el ETL termina con un mensaje que dice qué descargar y de dónde. Los ETL sobrescriben los CSV de `data/processed/`. El archivo `comercio_2208_90.csv` (UN Comtrade) lo genera el Integrante 2 y no sale de estos scripts. Fuentes, filtros y limitaciones de cada CSV: `data/README.md`.
 
 ## Drive abierto
 1. Crea una carpeta en Drive con subcarpetas `datos_originales`, `datos_procesados`, `dataset_vision`, `entregables`.
