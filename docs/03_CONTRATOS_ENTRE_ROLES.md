@@ -75,9 +75,11 @@ GET /ipo?escenario=base&anio_inicio=2026&anio_fin=2034
 | Archivo | Columnas mínimas | Lo genera |
 |---|---|---|
 | `denue_312142_jalisco.csv` | `nombre`, `municipio`, `clave_mun`, `lat`, `lon`, `estrato_personal` | Integrante 3 |
-| `comercio_2208_90.csv` | `periodo`, `valor_usd`, `volumen`, `unidad`, `destino` | Integrante 3 |
-| `censo_3121_municipal.csv` | `municipio`, `clave_mun`, `anio`, `produccion_bruta`, `valor_agregado`, `personal_ocupado` | Integrante 3 |
-| `inventario_agave.csv` | `anio`, `plantas`, `hectareas`, `fuente`, `definicion` | Integrante 2 (con apoyo de Int. 3) |
+| `comercio_2208_90.csv` | `periodo`, `anio`, `flujo`, `partida`, `destino`, `partner_code`, `es_total`, `valor_usd`, `volumen`, `unidad`, `fuente` | Integrante 2 |
+| `comercio_tequila_banxico.csv` | `periodo`, `valor_usd`, `volumen`, `unidad`, `destino` | Integrante 3 |
+| `censo_3121_municipal.csv` | `municipio`, `clave_mun`, `anio`, `produccion_bruta`, `valor_agregado`, `personal_ocupado`, `unidades_economicas`, `confidencial` | Integrante 3 |
+| `censo_312144_tequila_municipal.csv` | `municipio`, `clave_mun`, `anio`, `produccion_bruta`, `valor_agregado`, `personal_ocupado`, `unidades_economicas`, `confidencial` | Integrante 3 |
+| `inventario_agave.csv` | `anio`, `plantas`, `hectareas`, `siembra_neta_plantas`, `fuente`, `definicion` | Integrante 2 (con apoyo de Int. 3) |
 
 Las columnas pueden ajustarse a lo que traiga cada fuente. Lo importante es **documentar el cambio aquí** y mantener los nombres en minúsculas y sin acentos.
 
